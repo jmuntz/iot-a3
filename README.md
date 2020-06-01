@@ -16,7 +16,7 @@ The following endpoints can be used to access or submit data.
 
 ### GET - fetch yo datas
 $ means substitute a variable
-```
+```php
 integer $limit //limits the number of results
 string $host //provide the IP of a client computer (aka your public IP)t o fetch only results from that PC (IoT device) 
 
@@ -32,7 +32,7 @@ string $host //provide the IP of a client computer (aka your public IP)t o fetch
 
 ### SAVE - save yo datas
 Request type must be POST when sending your data here from Python/your IOT device.
-```
+```php
 // POST data must be an array with three values [string(your IP), string(epoch timestamp), int(value)].
 // eg; $arr = ["121.241.64.23", "1590993444", 24]
 
