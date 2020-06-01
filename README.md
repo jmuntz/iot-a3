@@ -6,7 +6,12 @@ https://iot.porky.dev/ass3/app
 The API is accessed from /api:
 https://iot.porky.dev/ass3/app/api
 
+All data sent and received my be JSON compliant.
+
 The following endpoints can be used to access or submit data.
+
+eg; To get temperature and humidity data, go here: https://iot.porky.dev/ass3/app/api/get
+eg; Find out the devices that have sent data here: https://iot.porky.dev/ass3/app/api/get/hosts
 
 ### GET - fetch yo datas
 $ means substitute a variable
