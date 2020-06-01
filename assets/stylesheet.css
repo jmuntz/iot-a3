@@ -1,0 +1,108 @@
+form {
+	margin: auto;
+    text-align: center;
+    background: #264763;
+    width: fit-content;
+    padding: 45px 35px;
+    border-radius: 15px;
+    box-shadow: 0 6px 15px -9px black;
+}
+
+form h1 {
+	color: white;
+}
+
+form input, form a.btn {
+    display: block;
+    margin-bottom: 10px;
+}
+form input {
+	margin: 5px auto;
+    padding: 10px 15px;
+    border: none;
+    border-bottom: 1px solid #2f5779;
+    border-radius: 4px;
+    color: #8cb2c5;
+    background: #223a50;
+}
+
+form button {
+	background: #3d93be;
+    color: #fff;
+    border-radius: 4px;
+    border: none;
+    text-transform: lowercase;
+    text-decoration: none;
+    width: 100%;
+    border-bottom: 1px solid #4eaddc;
+	margin-top: 10px;
+}
+
+button:focus, input:focus {
+    outline: none;
+}
+
+a.btn, button {
+    padding: 10px 15px;
+    background: #cd5969;
+    color: #fff;
+    border-radius: 4px;
+    border: none;
+    text-transform: lowercase;
+    text-decoration: none;
+}
+
+.btn.logout {
+	position: absolute;
+	right: 10px;
+	top: 10px;
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+body {
+    font-family: 'Jost';
+}
+
+.hero {
+    width: 50%;
+    padding: 15px 35px;
+    display: flex;
+    flex-wrap: wrap;
+    margin: 50px auto;
+	text-align: center;
+}
+.hero p {
+	width: 100%;
+}
+
+.hero div {
+    width: 50%;
+    font-size: 60px;
+    text-align: center;
+    font-weight: 900;
+}
+
+.hero div small {
+    font-weight: 300;
+    font-size: 24px;
+    display: inherit;
+}
+
+.hero h1 {
+    text-align: center;
+    font-size: 16px;
+    width: 100%;
+}
+
+
+canvas {
+	display: inline-block !important;
+}
+
+
+.charts {
+	text-align: center;
+}
