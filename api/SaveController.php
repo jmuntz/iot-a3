@@ -3,48 +3,64 @@
 use \RestServer\RestException;
 
 class SaveController {
+	// $_POST = json_decode(file_get_contents("php://input"), true);
+
 	/**
      * Returns a JSON string object to the browser when hitting the root of the domain
      *
      * @url GET /
      */
     public function donkey() {
-        return "ur a turd";
+        return "ur a turddd";
     }
+
 
 	/**
      * Returns a JSON string object to the browser when hitting the root of the domain
      *
-     * @url GET /temperature
+	 * @url POST /dump
+     */
+    public function testy() {
+		$json = json_decode(file_get_contents('php://input'), true);
+		return $json;
+	}
+
+
+
+
+	/**
+     * Returns a JSON string object to the browser when hitting the root of the domain
+     *
+     * @url POST /temperature
      */
 	public function saveTemp() {
+		$json = json_decode(file_get_contents('php://input'), true);
 
-		require_once './Database.php';
-		$db = new Database();
-		$pdo = $db->generatePDO();
-		//
-		// if (isset($_POST['data'])) {
-		// 	if ($this->validData($_POST['data'])) {
-		// 		return $this->saveData($_POST['data'], 'temperature');
-		// 	} $this->throwError('Data not valid.');
-		// } $this->throwError('Data not set.');
+		if (isset($json)) {
+			if ($this->validData($json)) {
+				return $this->saveData($this->formatTemperature($json), 'temperature');
+			} $this->throwError('Data not valid.');
+		} $this->throwError('Data not set.');
 	}
 
 	/**
      * Returns a JSON string object to the browser when hitting the root of the domain
      *
-     * @url GET /humidity
+     * @url POST /humidity
      */
 	public function saveHumidity() {
-		if (isset($_POST['data'])) {
-			if ($this->validData($_POST['data'])) {
-				return $this->saveData($_POST['data'], 'humidity');
+		$json = json_decode(file_get_contents('php://input'), true);
+
+		if (isset($json)) {
+			if ($this->validData($json)) {
+				return $this->saveData($this->formatHumidity($json), 'humidity');
 			} $this->throwError('Data not valid.');
 		} $this->throwError('Data not set.');
 	}
 
 	private function validData($data) {
-		return ((filter_var($data[0], FILTER_VALIDATE_IP)) && ($this->isValidTimeStamp($data[1]) && is_int($data[2])));
+		return true;
+		//return ((filter_var($data[0], FILTER_VALIDATE_IP)) && ($this->isValidTimeStamp($data[1]) && is_int($data[2])));
 	}
 
 	private function isValidTimeStamp($timestamp) {
@@ -53,21 +69,13 @@ class SaveController {
 	        && ($timestamp >= ~PHP_INT_MAX);
 	}
 
-	private function saveData($tmp_data, $type) {
+	private function saveData($data, $type) {
 		require_once './Database.php';
 		$db = new Database();
 		$pdo = $db->generatePDO();
 
 		if (($type == "temperature") || ($type == "humidity")) {
-			$data = [
-				'host' => $tmp_data[0],
-				'timestamp' => $tmp_data[1],
-				'data' => $tmp_data[2],
-			];
-			echo "saving data:";
-			print_r($tmp_data);
-			$sql = "INSERT INTO " . $type . " (host, timestamp, data) VALUES (:host, :timestamp, :data)";
-
+			$sql = "INSERT INTO " . $type . " (client_addr, timestamp, value) VALUES (:client_addr, :timestamp, :value)";
 			$stmt = $pdo->prepare($sql);
 
 			if (!$stmt->execute($data)) {
@@ -79,6 +87,25 @@ class SaveController {
 			$this->throwError("Data type not set.");
 		}
 
+	}
+
+
+	private function formatTemperature($json) {
+		// return $json;
+		$data["client_addr"] = $_SERVER['REMOTE_ADDR'];
+		$data["timestamp"] = time();
+		$data["value"] = $json["temp"];
+
+		return $data;
+	}
+
+	private function formatHumidity($json) {
+		// return $json;
+		$data["client_addr"] = $_SERVER['REMOTE_ADDR'];
+		$data["timestamp"] = time();
+		$data["value"] = $json["humidity"];
+
+		return $data;
 	}
 
     /**

@@ -16,7 +16,10 @@ class GetController {
      * @url GET /
      */
 	public function getData($limit = 25) {
- 		try {
+		$req_dump = print_r($_REQUEST, true);
+		$fp = file_put_contents('request.log', $req_dump, FILE_APPEND);
+
+		try {
  		   $pdo = $this->db->generatePDO();
 
  		   $t_sql = "SELECT * FROM temperature ORDER BY id DESC LIMIT $limit";
@@ -42,29 +45,29 @@ class GetController {
 
 
  			   foreach ($host_list as $key => $host) {
- 				   $data_obj['host'] = $host;
- 				   $sql = "SELECT * FROM temperature WHERE host = '$host' ORDER BY id DESC LIMIT $limit";
+ 				   $data_obj['client_addr'] = $host;
+ 				   $sql = "SELECT * FROM temperature WHERE client_addr = '$host' ORDER BY id DESC LIMIT $limit";
  				   $q = $pdo->prepare($sql);
  				   $q->execute();
  				   $data = $q->fetchAll(PDO::FETCH_ASSOC);
  				   $data_obj['data'] = [];
 
  				   foreach($data as $key => $value) {
- 					   array_push($data_obj['data'], $value['data']);
+ 					   array_push($data_obj['data'], $value['value']);
  				   }
  				   array_push($dataset_t, $data_obj);
 
  			   }
  			   foreach ($host_list as $key => $host) {
- 				   $data_obj['host'] = $host;
- 				   $sql = "SELECT * FROM humidity WHERE host = '$host' ORDER BY id DESC LIMIT $limit";
+ 				   $data_obj['client_addr'] = $host;
+ 				   $sql = "SELECT * FROM humidity WHERE client_addr = '$host' ORDER BY id DESC LIMIT $limit";
  				   $q = $pdo->prepare($sql);
  				   $q->execute();
  				   $data = $q->fetchAll(PDO::FETCH_ASSOC);
  				   $data_obj['data'] = [];
 
  				   foreach($data as $key => $value) {
- 					   array_push($data_obj['data'], $value['data']);
+ 					   array_push($data_obj['data'], $value['value']);
  				   }
  				   array_push($dataset_h, $data_obj);
 
@@ -93,7 +96,7 @@ class GetController {
 		try {
 			$pdo = $this->db->generatePDO();
 
-			$sql = $host ? "SELECT * FROM temperature WHERE host = '$host' ORDER BY id DESC LIMIT $limit" : "SELECT * FROM temperature ORDER BY id DESC LIMIT $limit";
+			$sql = $host ? "SELECT * FROM temperature WHERE client_addr = '$host' ORDER BY id DESC LIMIT $limit" : "SELECT * FROM temperature ORDER BY id DESC LIMIT $limit";
 
 			$getTemp = $pdo->prepare($sql);
 			$getTemp->execute();
@@ -117,7 +120,7 @@ class GetController {
 		try {
 			$pdo = $this->db->generatePDO();
 
-			$sql = $host ? "SELECT * FROM humidity WHERE host = '$host' ORDER BY id DESC LIMIT $limit" : "SELECT * FROM humidity ORDER BY id DESC LIMIT $limit";
+			$sql = $host ? "SELECT * FROM humidity WHERE client_addr = '$host' ORDER BY id DESC LIMIT $limit" : "SELECT * FROM humidity ORDER BY id DESC LIMIT $limit";
 
 			$getTemp = $pdo->prepare($sql);
 			$getTemp->execute();
@@ -152,7 +155,7 @@ class GetController {
 	 		try {
 	 			$pdo = $this->db->generatePDO();
 
-	 			$sql = "SELECT DISTINCT(host) FROM temperature";
+	 			$sql = "SELECT DISTINCT(client_addr) FROM temperature";
 
 				$hosts = array();
 
@@ -161,7 +164,7 @@ class GetController {
 				$data = $getTemp->fetchAll(PDO::FETCH_ASSOC);
 
 				foreach($data as $key => $value)
-					array_push($hosts, $value['host']);
+					array_push($hosts, $value['client_addr']);
 	 			return $hosts;
 
 	 		} catch (PDOException $e) {

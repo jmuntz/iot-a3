@@ -27,7 +27,7 @@ class Database {
 	}
 
 	public function throwError($msg) {
-        throw new RestException(666, "Database connection failed. $msg");
+        throw new RestException(666, "Database connection failed. usr[$this->username] ps[$this->password]. $msg");
     }
 }
 
