@@ -52,14 +52,33 @@ a.btn, button {
     text-decoration: none;
 }
 
-.btn.logout {
-	position: absolute;
-	right: 10px;
-	top: 10px;
-}
 
 button:hover {
     cursor: pointer;
+}
+
+.nav {
+    position: absolute;
+    list-style-type: none;
+    top: 10%;
+    right: 2%;
+
+}
+.nav.todo {
+    max-width: 300px;
+    right: 150px;
+}
+
+ul.menu {
+    position: absolute;
+    right: 10px;
+    top: 5px;
+}
+
+ul.menu li {
+    list-style: none;
+    display: inline;
+    margin-right: 0px;
 }
 
 body {
