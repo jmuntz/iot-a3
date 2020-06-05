@@ -1,14 +1,14 @@
-<?php require_once 'config.php'; echo $root_URL; ?>
+<?php require_once '../config.php'; ?>
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 	<head>
 		<meta charset="utf-8">
 		<title></title>
 	</head>
-	<link rel="stylesheet" href="./assets/stylesheet.css">
+	<link rel="stylesheet" href="../assets/stylesheet.css">
 	<body>
-		<h1>IoT Dashboard.</h1>
 		<?php session_start(); ?>
+		
 		
 		<?php if (!isset($_SESSION["logged_in"]) || (!$_SESSION["logged_in"])) : ?>
 		<form class="frm-login" action=<?php echo "$root_URL/api/login"; ?> method="post">
@@ -18,38 +18,19 @@
 			<button type="submit" name="button"> Login</button>
 		</form>
 		<?php else : ?>
-		<ul class="nav menu">
+		<ul class="menu">
 			<li><a class="btn" href=<?php echo '"'.$root_URL .'"'; ?>>Home</a></li>
 			<li><a class="btn logout" href="logout.php">Logout</a></li>
 		</ul>
-		<ul class="nav chart">
-			<li><strong>Charts</strong></li>
-			<li><a href="./charts/latest.php">Latest</a></li>
-			<li><a href="./charts/mean.php">Mean</a></li>
-			<li><a href="./charts/median.php">Median</a></li>
-		</ul>
-		<ul class="nav todo">
-			<li><strong>todo's</strong>
-			<li>Build out median chart</li>
-			<li>Build out mean chart</li>
-			<li>Add humidity to latest chart chart</li>
-		</ul>
 		<h3>You're logged in!</h3>
-		<div class="hero">
-			<h1>Some c00l statz</h1>
-			<div id="temp"><span class="value"><?php //echo round($most_recent['temp'], 2); ?>66°c</span><small>temperature</small></div>
-			<div id="humidity"><span class="value"><?php //echo $most_recent['humidity']; ?>66</span><small>humidity</small></div>
-			<p>Here we can showcase some hero stats such as median, mean, highest temp etc</p>
-		</div>
+		
+		
 		<div class="charts">
 			<div class="chart">
-				<h2> Temperature</h2>
-				<canvas id="tempChart" style="max-width: 500px; max-height: 500px;"></canvas>
+				<h2> Latest data</h2>
+				<canvas id="chart" style="max-width: 800px; max-height: 600px;"></canvas>
 			</div>
-			<div class="chart">
-				<h2>Humidity</h2>
-				<canvas id="humChart" style="max-width: 500px; max-height: 500px;"></canvas>
-			</div>
+			
 		</div>
 		<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
@@ -102,7 +83,7 @@
 				return promise;
 			};
 			function getAll() {
-				return fetch('//iot.porky.dev/ass3/app/api/get')
+				return fetch('https://iot.porky.dev/ass3/app/api/get')
 				.then(response => response.json())
 			}
 			getAll().then(function(data) {
@@ -112,16 +93,8 @@
 			});
 			let labels = [];
 			for (i = 0; i < 25; i++) { labels[i] = i; }
-			var ctx_temp = document.getElementById('tempChart').getContext('2d');
-			var ctx_hum = document.getElementById('humChart').getContext('2d');
-			var chart_temp = new Chart(ctx_temp, {
-				type: 'line',
-				data: {
-					labels: labels,
-				},
-				options: {}
-			});
-			var chart_hum = new Chart(ctx_hum, {
+			var ctx = document.getElementById('chart').getContext('2d');
+			var chart = new Chart(ctx, {
 				type: 'line',
 				data: {
 					labels: labels,
@@ -138,27 +111,15 @@
 						dataset = [{}];
 						for(index in data.temperature) {
 							dataset[index] = {
-								label: "Host " + index,//data.temperature[index].host,
+								label: "Client " + index,//data.temperature[index].host,
 								labels: labels,
 								borderColor: "red",
 								backgroundColor: 'transparent',
 								data: data.temperature[index].data
 							}
 						}
-						chart_temp.config.data.datasets = dataset;
-						dataset = [{}];
-						for(index in data.humidity) {
-							dataset[index] = {
-								label: "Host " + index,//data.humidity[index].host,
-								labels: labels,
-								borderColor: "purple",
-								backgroundColor: 'transparent',
-								data: data.humidity[index].data
-							}
-						}
-						chart_hum.config.data.datasets = dataset;
-						chart_hum.update();
-						chart_temp.update();
+						chart.config.data.datasets = dataset;
+						chart.update();
 					}).catch(function(error) {
 						console.log("getAll chart request failed.");
 					});
