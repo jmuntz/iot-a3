@@ -2,18 +2,24 @@ import urllib.request
 import json
 import random
 
-randnum = random.randint(10,26)
 
-body = {'id':'133','host':'111.111.111.222','timestamp':'1590824976','data':randnum}
+def save_sample():
+    randnum = random.randint(10,26)
 
-myurl = "http://iot.porky.dev/ass3/app/api/save/dump"
+    body = {'id':'133','host':'111.111.111.222','timestamp':'1590824976','data':randnum}
 
-req = urllib.request.Request(myurl)
-req.add_header('Content-Type', 'application/json; charset=utf-8')
-jsondata = json.dumps(body)
-jsondataasbytes = jsondata.encode('utf-8')   # needs to be bytes
-req.add_header('Content-Length', len(jsondataasbytes))
-print (jsondataasbytes)
-response = urllib.request.urlopen(req, jsondataasbytes)
+    myurl = "http://iot.porky.dev/ass3/app/api/save/dump"
 
-my_json = json.loads(response.read())
+    req = urllib.request.Request(myurl)
+    req.add_header('Content-Type', 'application/json; charset=utf-8')
+    jsondata = json.dumps(body)
+    jsondataasbytes = jsondata.encode('utf-8')   # needs to be bytes
+    req.add_header('Content-Length', len(jsondataasbytes))
+    print (jsondataasbytes)
+    response = urllib.request.urlopen(req, jsondataasbytes)
+
+    my_json = json.loads(response.read())
+
+
+if __name__=="__main__":
+    save_sample()
