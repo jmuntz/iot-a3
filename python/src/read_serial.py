@@ -12,7 +12,7 @@ def read_serial():
     ser.flush()
     ser.reset_input_buffer()
     ser.reset_output_buffer()
-    while True:
+    while True: 
         if ser.in_waiting > 0:
             data = ser.readline().decode('utf-8').rstrip(' ')
             print("SERIAL DATA: " + "["+data+"]")
@@ -21,6 +21,11 @@ def read_serial():
             temperature = json_data["temp"]
             humidity = json_data["humidity"]
             #motorPos = json_data["motorPos"]
+            #print(temperature)
+            return json_data
+            
+            
+            
             
 if __name__ == '__main__':
     read_serial()
