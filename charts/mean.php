@@ -31,10 +31,10 @@
 		<ul class="nav todo">
 			<li><strong>todo's</strong>
 			<li>Build out median chart</li>
-			<li>Build out mean chart</li>
+			<li style="text-decoration: line-through;">Build out mean chart</li>
 			<li style="text-decoration: line-through;">Add humidity to <em>latest</em> chart chart</li>
 			<li>Add feature to allow actuator to act based on temperature</li>
-			<li> - needs to be editable via website</li>
+			<li style="text-decoration: line-through;"> - needs to be editable via website</li>
 			<li> Report</li>
 		</ul>
 		<h3>You're logged in!</h3>
@@ -170,9 +170,6 @@
 			};
 
 
-
-
-
 			function calculateMean(data) {
 				mean_data = [];
 				spliced_array = [];
@@ -191,89 +188,6 @@
 				return mean_data;
 			}
  
-
-
-
-
-
-
-// bigFunction()
-
-// function bigFunction() {
-// 	getTemperature().then(function(data) {
-// 		dataset = data;
-// 		console.log("DATAS")
-
-// 		// 0: {id: "4353", client_addr: "144.136.177.59", timestamp: "1591581044", value: "-4"}
-// 		// 1: {id: "4352", client_addr: "144.136.177.59", timestamp: "1591581039", value: "-4"}
-// 		// 2: {id: "4351", client_addr: "144.136.177.59", timestamp: "1591581034", value: "-4"}
-
-// 		console.log(dataset)
-		
-// 		dataset = trimData(dataset);
-// 		dataset = sliceData(dataset);
-// 	}).catch(function(error) {
-// 		console.log("getAll chart request failed.");
-// 	});
-// }
-
-
-
-// function trimData(data) {
-// 	trimmed = [];
-
-// 	for (index in data) {
-// 		if ((Math.floor(new Date().getTime()/1000.0) - (data[index].timestamp)) < 86400)
-// 			trimmed[index] = data[index]
-// 	}
-// 	return trimmed;
-// }
-
-// function sliceData(data) {
-// 	sliced = [];
-// 	hour = 1;
-
-// 	console.log(data[index].timestamp)
-// 	console.log(Math.floor(new Date().getTime()/1000.0))
-
-// 	time = Math.floor(new Date().getTime()/1000.0)
-
-// 	for (index in data) {
-		
-// 		time_diff = time - data[index].timestamp;
-
-// 		if ((3600 * hour) < time_diff) {
-// 			console.log("FOUND: " + (3600 * hour) + " | " + time_diff)
-// 			sliced[index] = data[index]
-// 			hour++;
-// 		}
-// 	}
-// 	console.log("SLICEDEYS");
-// 	console.log(sliced);
-// 	return sliced;
-// }
-
-
-// trim data > 86400
-// split data | 3600 (1hr)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 		</script>
