@@ -1,6 +1,7 @@
-//#include "DHT.h"
+#include "DHT.h"
 #include <Adafruit_Sensor.h>
 #include <ArduinoJson.h>
+
 //#include <Time.h>
 unsigned long clocktime;
 
@@ -8,7 +9,7 @@ unsigned long clocktime;
 
 
 #define DHTPIN 2     // Digital pin connected to the DHT sensor
-#define DHTTYPE DHT11   // DHT 11
+#define DHTTYPE DHT22   // DHT 22
 
 DHT dht(DHTPIN, DHTTYPE);
 StaticJsonDocument<200> json_data;
