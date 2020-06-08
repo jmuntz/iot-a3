@@ -17,6 +17,7 @@ server = 'https://iot.porky.dev/ass3/app'
 
 
 def save_req(pString):
+    print(pString)
     req = urllib.request.Request(server + '/api/save/' + pString)
     req.add_header('Content-Type', 'application/json; charset=utf-8')
 
@@ -93,3 +94,5 @@ def save_temp_and_hum():
 if __name__ == '__main__':
     #save_temp_and_hum()
     read_serial()
+    save_req('humidity')
+    save_req('temp')

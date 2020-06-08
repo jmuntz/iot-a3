@@ -15,11 +15,11 @@ class JsonDataProcessor:
         self.__temperature = 0
         self.__humidity = 0
         self.__motorPos = 0
-        self.__fanOn = False
+        self.__fanOn = 0
         # self.updateDataToProcess(pData)
         # self.move_servo(servo_position)
        
-    def append_actuator_data_to_json(self, pMotorPos: float, pFanIsOn: bool):
+    def append_actuator_data_to_json(self, pMotorPos: float, pFanIsOn: int):
             dc_motor_data = {"fanIsOn": pFanIsOn}
             # python object to be appended 
             servo_data = {"motorPos": pMotorPos} 
@@ -99,7 +99,7 @@ class JsonDataProcessor:
         self.__json_string = json.dumps(data)    
        
     def get_json_string(self): 
-        return __self.json_string   
+        return self.__json_string   
        
     
     def set_temperature(self, temperature): 

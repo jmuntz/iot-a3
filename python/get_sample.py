@@ -4,7 +4,7 @@ from urllib import request, parse
 import random
 
 def get_sample():
-    url = "http://iot.porky.dev/ass3/app/api/get/temperature/5"
+    url = "http://iot.porky.dev/ass3/app/api/get/config"
 
     randnum = random.randint(10,26)
 

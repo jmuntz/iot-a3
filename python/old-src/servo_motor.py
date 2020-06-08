@@ -12,12 +12,23 @@ class ServoDevice:
        # self.move_servo(servo_position)
     
     def validator(self, pPos):
-        print("run validator")
-      
-    
+        #print("run validator")
+        if(pPos < -1):
+            print("Value is below minimum range for servo!")
+            print(pPos)
+            pPos = -1
+#            return pPos
+        elif(pPos > 1):
+            print("Value is above maximum range for servo!")
+            print(pPos)
+            pPos = 1
+        
+        return pPos
+
+
     def move_servo(self, servo_position):
-        #self.servo.value=self.convert_percentage_to_integer(servo_position) 
-        servo_position = validator(servo_position)
+        #self.servo.value=self.convert_percentage_to_integer(servo_position)
+        servo_position = self.validator(servo_position)
         self.servo.value=servo_position
 
     def convert_percentage_to_integer(self, percentage_amount):
@@ -32,9 +43,9 @@ class ServoDevice:
         conversionVal = totalRange/maxTemp
         currentTemp = data
         nextPos = 0
-        if(float(currentTemp) > 22):
+        if(float(currentTemp) > 25):
             nextPos = minPos
-        elif(float(currentTemp) < 20):
+        elif(float(currentTemp) < 18.5):
             nextPos = maxPos
         else:
             nextPos = float(currentTemp) * conversionVal
