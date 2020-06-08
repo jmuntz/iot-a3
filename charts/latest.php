@@ -33,7 +33,6 @@
 				<li>Build out median chart</li>
 				<li>Build out mean chart</li>
 				<li style="text-decoration: line-through;">Add humidity to <em>latest</em> chart chart</li>
-				<li>Add humidity to <em>latest</em> chart chart</li>
 				<li>Add feature to allow actuator to act based on temperature</li>
 				<li> - needs to be editable via website</li>
 				<li> Report</li>
@@ -55,6 +54,11 @@
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
 			<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
 			<script>
+
+				const TOTAL_SIZE = 25;
+
+
+
 				let clients = [];
 				function getTotalHosts() {
 					fetch('//iot.porky.dev/ass3/app/api/get/hosts')
@@ -74,7 +78,7 @@
 					console.log("getAll request failed.");
 				});
 				let labels = [];
-				for (i = 0; i < 25; i++) { labels[i] = i; }
+				for (i = 0; i < TOTAL_SIZE; i++) { labels[i] = i; }
 				var ctx = document.getElementById('chart').getContext('2d');
 				var chart = new Chart(ctx, {
 					type: 'line',
@@ -84,25 +88,27 @@
 					options: {}
 				});
 				updateChart();
+
 				function updateChart() {
-						getAll().then(function(data) {
-							dataset = [{}];
-							
-							for (index in data.temperature) {
-								dataset[index] = {
-									// label: "Client " + index,//data.temperature[index].host,
-									label: data.temperature[index].client_addr,//data.temperature[index].host,
-									labels: labels,
-									borderColor: "red",
-									backgroundColor: 'transparent',
-									data: data.temperature[index].data
-								}
+					getAll().then(function(data) {
+						dataset = [{}];
+						
+						for (index in data.temperature) {
+							dataset[index] = {
+								// label: "Client " + index,//data.temperature[index].host,
+								label: data.temperature[index].client_addr,//data.temperature[index].host,
+								labels: labels,
+								borderColor: "red",
+								backgroundColor: 'transparent',
+								data: data.temperature[0].data.splice(0, TOTAL_SIZE).reverse()
 							}
-							chart.config.data.datasets = dataset;
-							chart.update();
-						}).catch(function(error) {
-							console.log("getAll chart request failed.");
-						});
+						}
+
+						chart.config.data.datasets = dataset;
+						chart.update();
+					}).catch(function(error) {
+						console.log("getAll chart request failed.");
+					});
 				};
 				function rechartTemperature() {
 					getAll().then(function(data) {
@@ -115,7 +121,7 @@
 								labels: labels,
 								borderColor: "red",
 								backgroundColor: 'transparent',
-								data: data.temperature[index].data
+								data: data.temperature[0].data.splice(0, TOTAL_SIZE).reverse()
 							}
 						}
 						chart.config.data.datasets = dataset;
@@ -135,7 +141,7 @@
 								labels: labels,
 								borderColor: "purple",
 								backgroundColor: 'transparent',
-								data: data.humidity[index].data
+								data: data.humidity[0].data.splice(0, TOTAL_SIZE).reverse()
 							}
 						}
 						chart.config.data.datasets = dataset;
@@ -144,6 +150,12 @@
 						console.log("getAll chart request failed.");
 					});
 				};
+
+
+				
+
+
+
 			</script>
 			<?php endif; ?>
 		</body>
