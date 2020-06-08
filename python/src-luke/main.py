@@ -11,3 +11,4 @@ if __name__ == "__main__":
         newMotorPos = servo_device.calculatePosFromTemp(temp)
         runFan(float(temp))
         writeToDB(temp, isHot, newMotorPos)
+        #write to Josh's website instead of my own

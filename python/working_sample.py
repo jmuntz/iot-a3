@@ -1,4 +1,5 @@
 import serial
+from serial import Serial
 import socket
 import sys
 import json
@@ -15,13 +16,18 @@ server = 'https://iot.porky.dev/ass3/app'
 # posty = requests.post(host + '/functions.php', params=test_data, headers = {"User-Agent": "Firefox/12.0"});
 
 
+def save_req(pString):
+    req = urllib.request.Request(server + '/api/save/' + pString)
+    req.add_header('Content-Type', 'application/json; charset=utf-8')
 
-def is_json(data):
-    try:
-        json_object = json.loads(data)
-    except ValueError as e:
-        return False
-    return True
+    req.add_header('Content-Length', len(jsondataasbytes))
+    #print (jsondataasbytes)
+    response = urllib.request.urlopen(req, jsondataasbytes)
+    
+    txt_response = response.read()
+    
+    my_json = json.loads(txt_response)   
+    print(my_json)
 
 if __name__ == '__main__':
     ser = serial.Serial('/dev/ttyACM0', 115200, timeout=1)
@@ -53,8 +59,6 @@ if __name__ == '__main__':
             
             my_json = json.loads(txt_response)   
             print(my_json)
-            
-            
             
             hum_req = urllib.request.Request(server + '/api/save/humidity')
             hum_req.add_header('Content-Type', 'application/json; charset=utf-8')
