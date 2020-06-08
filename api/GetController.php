@@ -15,7 +15,7 @@ class GetController {
      *
      * @url GET /
      */
-	public function getData($limit = 25) {
+	public function getData($limit = 10000) {
 		$req_dump = print_r($_REQUEST, true);
 		$fp = file_put_contents('request.log', $req_dump, FILE_APPEND);
 
@@ -133,16 +133,6 @@ class GetController {
 	}
 
 
-	/**
-	 * Returns a JSON string object to the browser when hitting the root of the domain
-	 *
-	 *
-	 * @url GET /all
-	 */
-
-
-
-
 
 		/**
 		 * Returns a JSON string object to the browser when hitting the root of the domain
@@ -171,6 +161,23 @@ class GetController {
 	 			$this->throwError($e->getMessage());
 	 		}
 	 	}
+
+		/**
+		 * Returns a JSON string object to the browser when hitting the root of the domain
+		 * Gets the unique number of hosts that have submitted data to server.
+		 * Only uses temp data for now.
+		 *
+		 * @url GET /config
+		 */
+		 public function getConfig() {
+	 		$url = './iot_config.json'; 
+			$data = file_get_contents($url); 
+			$characters = json_decode($data); 
+
+	 		return $characters;
+	 		// return 'test';
+	 	}
+
 
     /**
      * Get Charts
