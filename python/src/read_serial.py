@@ -22,10 +22,7 @@ def read_serial():
             humidity = json_data["humidity"]
             #motorPos = json_data["motorPos"]
             #print(temperature)
-            return json_data
-            
-            
-            
+            return data
             
 if __name__ == '__main__':
     read_serial()

@@ -10,15 +10,20 @@ class ServoDevice:
     def __init__(self, servo_position=0):      
         self.servo = Servo(self.servo_pin)
        # self.move_servo(servo_position)
-
-    def move_servo(self, servo_position): 
-        #self.servo.value=self.convert_percentage_to_integer(servo_position)
+    
+    def validator(self, pPos):
+        print("run validator")
+      
+    
+    def move_servo(self, servo_position):
+        #self.servo.value=self.convert_percentage_to_integer(servo_position) 
+        servo_position = validator(servo_position)
         self.servo.value=servo_position
 
     def convert_percentage_to_integer(self, percentage_amount):
         return (percentage_amount*0.02)-1
     
-    
+
     def calculatePosFromTemp(self, data):
         maxPos = -1 #value is in degrees
         minPos = 1
@@ -33,7 +38,7 @@ class ServoDevice:
             nextPos = maxPos
         else:
             nextPos = float(currentTemp) * conversionVal
-
+       
         print(nextPos)
         self.move_servo(nextPos)
         time.sleep(1)
@@ -53,6 +58,7 @@ class ServoDevice:
             pos = x
             self.move_servo(pos)
             time.sleep(speedRateLimiter)
+            
     def test_range_of_motion(self):
         servo_device.sweep_motor()
         servo_device.servo.max()

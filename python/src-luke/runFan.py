@@ -4,10 +4,13 @@ from dc_motor import *
 def runFan(pTemp):
     if (pTemp > 20):
         motorON()
+        return True
     elif (pTemp < 20):
         motorOFF()
+        return False
     else:
-        motorOFF()            
+        motorOFF()
+        return False
 
 
 
