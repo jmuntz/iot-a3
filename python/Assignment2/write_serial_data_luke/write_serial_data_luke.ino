@@ -1,4 +1,5 @@
-#include "DHT.h"
+//#include "DHT.h"
+#include <Adafruit_Sensor.h>
 #include <ArduinoJson.h>
 //#include <Time.h>
 unsigned long clocktime;
