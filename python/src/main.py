@@ -1,17 +1,16 @@
 import sys
 sys.path.insert(1, './src')
 
-from runFan import *
 #from dc_motor import *
+from runFan import Fan
 from servo_motor import ServoDevice
 
 # this working_sample needs improvement
-from working_sample import save_temp_and_hum
+from save_data_to_server import save_temp_and_hum
 #####
 from read_serial import read_serial
 from json_data_processor import JsonDataProcessor
 from get_config import PhysicalSystemConfiguration
-from runFan import Fan
 
 def set_actuator_parameters(pFan, pTemperature):
         #set actuator parameters(based on temperature values)
