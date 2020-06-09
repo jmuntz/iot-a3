@@ -25,7 +25,7 @@ class UpdateController {
      * @url GET /config
      */
 	public function processConfigOptions() {
-		if (isset($_GET['fanOn']) && (isset($_GET['fanOn']))) {
+		if (isset($_GET['fanSpeed']) && (isset($_GET['motorPosition'])) && (isset($_GET['status']))) {
 			$fp = fopen('iot_config.json', 'w');
 			fwrite($fp, json_encode($_GET));
 			fclose($fp);
@@ -38,11 +38,33 @@ class UpdateController {
 		} 
 		echo "<br><br>
 		<h1>Update config.</h1>
+		<style>
+		input, select {
+			display: block;
+			padding: 10px 15px;
+			border-radius: 4px;
+			margin-bottom: 5px;
+			border: 1px solid #d1d1d1;
+		}
+		</style>
 		<form action='https://iot.porky.dev/ass3/app/api/update/config'>
-			<input type='text' name='fanOn' placeholder='fanOn value..'>
-			<input type='text' name='motorPosition' placeholder='motorPosition value..'>
+			<input type='text' name='fanSpeed' placeholder='Maximum fan speed'>
+			<input type='text' name='motorPosition' placeholder='motorPosition value'>
+			<label for='status'>Device mode:</label>
+			<select id='status' name='status'>
+				<option value='OFF' selected>OFF</option>
+				<option value='ON'>ON</option>
+				<option value='TEST'>TEST</option>
+				<option value='SWEEP'>SWEEP</option>
+			</select>
 			<button type='submit'>Submit</button>
 		</form>";
+
+		$json = file_get_contents('https://iot.porky.dev/ass3/app/api/get/config');
+		$obj = json_decode($json);
+		echo "<br>Fan speed: " . $obj->fanSpeed;
+		echo "<br>Motor position: " . $obj->motorPosition;
+		echo "<br>Status: " . $obj->status;
 		
 	}
 
