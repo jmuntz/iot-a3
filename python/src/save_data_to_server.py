@@ -32,7 +32,10 @@ def save_data_val(pString, pJsondataasbytes):
         
 def save_temp_humidity(pJson_databytes):
     save_data_val('temperature', pJson_databytes)
-    save_data_val('humidity', pJson_databytes)   
+    time.sleep(3)
+    save_data_val('humidity', pJson_databytes)
+    time.sleep(3)
+
        
 def save_test():
     
@@ -73,6 +76,8 @@ def read_serial():
             json_data = json.loads(data)
             
             temperature = json_data["temp"]
+            time.sleep(1)
+
             humidity = json_data["humidity"]
             #motorPos = json_data["motorPos"]
             

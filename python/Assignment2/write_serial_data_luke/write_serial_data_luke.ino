@@ -55,6 +55,11 @@ void loop() {
         else break;   
     } 
   }
+  
+  if (stringData.length() > 0){
+    //lcd.print(stringData);
+    delay(3000);
+  } 
 }
 
 
