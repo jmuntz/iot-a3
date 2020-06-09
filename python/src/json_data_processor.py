@@ -10,6 +10,7 @@ class JsonDataProcessor:
         self.__data = {"temp":0.0,"humidity":0.0}
         self.__json_string = json.dumps(self.__data)
         self.__json_dictionary = json.loads(self.__json_string)
+        self.__json_databytes = self.__json_string.encode('utf-8')
         print("Serial data: " + self.__json_string)
         
         self.__temperature = 0
@@ -20,19 +21,19 @@ class JsonDataProcessor:
         # self.move_servo(servo_position)
        
     def append_actuator_data_to_json(self, pMotorPos: float, pFanIsOn: int):
-            dc_motor_data = {"fanIsOn": pFanIsOn}
-            # python object to be appended 
-            servo_data = {"motorPos": pMotorPos} 
-              
-            # parsing JSON string to dictionary: 
-            self.__json_dictionary = json.loads(self.__data) 
-               
-            # appending the data 
-            self.__json_dictionary.update(servo_data)
-            self.__json_dictionary.update(dc_motor_data)
-            self.set_json_string(self.__json_dictionary)
-            # the result is a JSON string: 
-            print(json.dumps(self.__json_dictionary))
+        dc_motor_data = {"fanIsOn": pFanIsOn}
+        # python object to be appended 
+        servo_data = {"motorPos": pMotorPos} 
+          
+        # parsing JSON string to dictionary: 
+        self.__json_dictionary = json.loads(self.__data) 
+        
+        # appending the data 
+        self.__json_dictionary.update(servo_data)
+        self.__json_dictionary.update(dc_motor_data)
+        self.set_json_string(self.__json_dictionary)
+        # the result is a JSON string: 
+        print(json.dumps(self.__json_dictionary))
         
     def key_exists(self, pKey):
         if (pKey != "motorPos" and pKey != "fanIsOn"):
@@ -71,6 +72,7 @@ class JsonDataProcessor:
         #print(pData)
         #print(self.__json_dictionary)
         self.set_json_string(self.__json_dictionary)
+        self.set_json_databytes(self.set_json_string)
         self.set_temperature(self.__json_dictionary["temp"])
         self.__humidity = self.__json_dictionary["humidity"]
         
@@ -99,8 +101,13 @@ class JsonDataProcessor:
         self.__json_string = json.dumps(data)    
        
     def get_json_string(self): 
-        return self.__json_string   
-       
+        return self.__json_string
+    
+    def set_json_databytes(self,pString):
+        self.__jsondataasbytes = self.__json_string.encode('utf-8')
+    
+    def get_json_databytes(self):
+        return self.__jsondataasbytes
     
     def set_temperature(self, temperature): 
         self.__temperature = temperature

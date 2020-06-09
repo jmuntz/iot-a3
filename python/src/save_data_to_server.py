@@ -10,14 +10,31 @@ import urllib.request
 import random
 
 randnum = random.randint(10,26)
-
 server = 'https://iot.porky.dev/ass3/app'
+
 
 # posty = requests.post(host + '/functions.php', params=test_data, headers = {"User-Agent": "Firefox/12.0"});
 
 
-
-def save_temp_and_hum():
+def save_data_val(pString, pJsondataasbytes):
+    
+        lServer = 'https://iot.porky.dev/ass3/app'
+        req = urllib.request.Request(lServer + '/api/save/'+ pString)
+        req.add_header('Content-Type', 'application/json; charset=utf-8')
+        req.add_header('Content-Length', len(pJsondataasbytes))
+        #print (jsondataasbytes)
+        response = urllib.request.urlopen(req, pJsondataasbytes)
+        
+        txt_response = response.read()
+        
+        my_json = json.loads(txt_response)
+        print(my_json)
+        
+def save_temp_humidity(pJson_databytes):
+    save_data_val('temperature', pJson_databytes)
+    save_data_val('humidity', pJson_databytes)   
+       
+def save_test():
     
     ser = serial.Serial('/dev/ttyACM0', 115200, timeout=1)
     ser.flush()
@@ -33,36 +50,17 @@ def save_temp_and_hum():
             temperature = json_data["temp"]
             humidity = json_data["humidity"]
             
-            
-            #if is_json(data):
-           
-            temp_req = urllib.request.Request(server + '/api/save/temperature')
-            temp_req.add_header('Content-Type', 'application/json; charset=utf-8')
             jsondata = json.dumps(json_data)
             jsondataasbytes = jsondata.encode('utf-8')   # needs to be bytes
-            temp_req.add_header('Content-Length', len(jsondataasbytes))
-            #print (jsondataasbytes)
-            temp_response = urllib.request.urlopen(temp_req, jsondataasbytes)
+            #if is_json(data):
+            #save_data_val('temperature', jsondataasbytes)
             
-            txt_response = temp_response.read()
-            
-            my_json = json.loads(txt_response)   
-            print(my_json)
-            
-            hum_req = urllib.request.Request(server + '/api/save/humidity')
-            hum_req.add_header('Content-Type', 'application/json; charset=utf-8')
-
-            hum_req.add_header('Content-Length', len(jsondataasbytes))
-            #print (jsondataasbytes)
-            hum_response = urllib.request.urlopen(hum_req, jsondataasbytes)
-            
-            txt_response = hum_response.read()
-            
-            my_json = json.loads(txt_response)   
-            print(my_json)
+            #save_data_val('humidity', jsondataasbytes)
+            save_temp_humidity(jsondataasbytes)
         #ser.flush()
-
-
+    
+    
+    
 def read_serial():
     ser = serial.Serial('/dev/ttyACM0', 115200, timeout=1)
     ser.flush()
@@ -82,25 +80,10 @@ def read_serial():
             save_req('temp', json_data)
             save_req('humidity', json_data)
 
-def save_req(pString, json_data):
-    print(pString)
-    req = urllib.request.Request(server + '/api/save/' + pString)
-    req.add_header('Content-Type', 'application/json; charset=utf-8')
-    jsondata = json.dumps(json_data)
-    jsondataasbytes = jsondata.encode('utf-8')   # needs to be bytes
-            
-    req.add_header('Content-Length', len(jsondataasbytes))
-    #print (jsondataasbytes)
-    response = urllib.request.urlopen(req, jsondataasbytes)
-    
-    txt_response = response.read()
-    
-    my_json = json.loads(txt_response)   
-    print(my_json)
-
 
 if __name__ == '__main__':
     #save_temp_and_hum()
-    read_serial()
+    save_test()
+    #read_serial()
     #save_req('humidity')
     #save_req('temp')

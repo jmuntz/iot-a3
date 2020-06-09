@@ -1,5 +1,5 @@
 import numpy as np
-#from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LinearRegression
 
 def setup():
     x = np.array([5, 15, 25, 35, 45, 55]).reshape((-1, 1))
@@ -14,10 +14,10 @@ def setup():
     model.fit(x, y)
     
     #SHORTCUT:does two lines above at once
-    model = LinearRegression.fit(x,y)
+    #model = LinearRegression.fit(x, y)
     
     
-def get_results():
+#def get_results():
     #score are predictor x and regressor y
     r_sq = model.score(x, y)
     print('coefficient of determinaltion: ', r_sq)

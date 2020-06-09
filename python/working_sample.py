@@ -93,6 +93,7 @@ def save_temp_and_hum():
 
 if __name__ == '__main__':
     #save_temp_and_hum()
-    read_serial()
-    save_req('humidity')
-    save_req('temp')
+    #read_serial()
+    #save_req('humidity')
+    #save_req('temp')
+    save_temp_and_hum()
