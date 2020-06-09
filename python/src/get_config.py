@@ -1,6 +1,7 @@
 import requests, json
 import urllib.request, urllib.parse
 from urllib import request, parse
+import time
 
 class PhysicalSystemConfiguration:
 
@@ -9,9 +10,10 @@ class PhysicalSystemConfiguration:
         url = "http://iot.porky.dev/ass3/app/api/get/config"
 
         contents = urllib.request.urlopen(url).read()
-
+        time.sleep(10)
         r = requests.get(url)
         req = urllib.request.Request(url)
+        time.sleep(2)
         parsed = urllib.request.urlopen(req).read()
         self.__config = json.loads(parsed.decode('utf-8'))
         

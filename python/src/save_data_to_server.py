@@ -31,38 +31,11 @@ def save_data_val(pString, pJsondataasbytes):
         print(my_json)
         
 def save_temp_humidity(pJson_databytes):
+    time.sleep(10)
     save_data_val('temperature', pJson_databytes)
-    time.sleep(3)
+    time.sleep(10)
     save_data_val('humidity', pJson_databytes)
-    time.sleep(3)
-
-       
-def save_test():
-    
-    ser = serial.Serial('/dev/ttyACM0', 115200, timeout=1)
-    ser.flush()
-    ser.reset_input_buffer()
-    ser.reset_output_buffer()
-    
-    while True:
-        if ser.in_waiting > 0:
-            data = ser.readline().decode('utf-8').rstrip(' ')
-            print("SERIAL DATA: " + "["+data+"]")
-            json_data = json.loads(data)
-            
-            temperature = json_data["temp"]
-            humidity = json_data["humidity"]
-            
-            jsondata = json.dumps(json_data)
-            jsondataasbytes = jsondata.encode('utf-8')   # needs to be bytes
-            #if is_json(data):
-            #save_data_val('temperature', jsondataasbytes)
-            
-            #save_data_val('humidity', jsondataasbytes)
-            save_temp_humidity(jsondataasbytes)
-        #ser.flush()
-    
-    
+    time.sleep(10)
     
 def read_serial():
     ser = serial.Serial('/dev/ttyACM0', 115200, timeout=1)
@@ -74,7 +47,7 @@ def read_serial():
             data = ser.readline().decode('utf-8').rstrip(' ')
             print("SERIAL DATA: " + "["+data+"]")
             json_data = json.loads(data)
-            
+            ahk 
             temperature = json_data["temp"]
             time.sleep(1)
 

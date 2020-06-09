@@ -11,7 +11,7 @@ from servo_motor import ServoDevice
 from read_serial import read_serial
 from json_data_processor import JsonDataProcessor
 from get_config import PhysicalSystemConfiguration
-from save_data_to_server import save_data_val, save_temp_humidity
+from save_data_to_server import save_temp_humidity
 
 def set_actuator_parameters(sysConfig, pFan, pServo,  pTemperature):
         #set actuator parameters(based on temperature values)
