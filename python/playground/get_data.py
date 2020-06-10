@@ -6,11 +6,19 @@ import time
 
 class DataController:
         
-    def __init__(self):      
+    def __init__(self, pHost):      
         self.__url = "http://iot.porky.dev/ass3/app/api"
+        self.__name = pHost
         self.__host = "/144.136.177.59"
-        
-        
+        if(pHost =="luke"):
+            self.__host = "/144.136.177.59"
+        elif(pHost == "josh"):
+            self.__host = "/203.220.196.224"
+        else:
+            print("!!!!!!!!Name not recognised !!!!!!!")
+            self.__host = "/144.136.177.59"
+
+
     def get_sample(self):
         url = "http://iot.porky.dev/ass3/app/api/get/temperature/5"
 
@@ -78,17 +86,20 @@ class DataController:
         get_request(string_req)
         
     def writeToFile(self, pContents, pFileSource):
-        file_object = open(pFileSource, "w+")
+        file_object = open(self.__name +"_" +  pFileSource, "w+")
         file_object.write(pContents)
     
     
-    def convert_temp_data_intoArray():
+    def convert_temp_data_intoArray(self):
         latest_temp_id = 4
         latest_humidity_id = 5
-        #from x in range(latest_temp_id)  
+        #from x in range(latest_temp_id)
+        
+    def get_name(self):
+        return self.__name
 
 if __name__ == "__main__":
-    dataController = DataController()
+    dataController = DataController("josh")
     
     #dataController.get_sample()
     #time.sleep(4)

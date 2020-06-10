@@ -51,7 +51,7 @@ def read_serial():
             json_data = json.loads(data)
              
             temperature = json_data["temp"]
-            time.sleep(1)
+            time.sleep(3)
 
             humidity = json_data["humidity"]
             #motorPos = json_data["motorPos"]
@@ -62,8 +62,8 @@ def read_serial():
 
 
 if __name__ == '__main__':
-    #save_temp_and_hum()
-    save_test()
+    read_serial()
+    #save_test()
     #read_serial()
     #save_req('humidity')
     #save_req('temp')

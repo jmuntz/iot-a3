@@ -1,6 +1,7 @@
 import json
 import sys
 sys.path.insert(1, '../playground')
+from get_data import DataController
 
 class JsonDataProcessor:
     
@@ -96,25 +97,45 @@ class JsonDataProcessor:
     def get_max_id_of_object(self, data):
         event = max(data, key=lambda ev: ev['id'])
         print(event["id"])
-    
-    def read_json_from_file(self, pDataType):
-        print("-----------------Reading JSON File---------------")
-        with open("/home/pi/Desktop/iot-a3/python/playground/" + pDataType + ".json") as json_file:
-            print(json_file)
-            data = json.load(json_file)
-            print(data)
-            return data
         
-    def convert_jsonfile_to_array(self, pDataType):
+    def get_num_of_json_objects_from_file(self, pName, pDataType):
         array = []
-        #print("-----------------Converting JSON objects into Array---------------")
-        with open("/home/pi/Desktop/iot-a3/python/playground/" + pDataType + ".json") as json_file:
+        with open("/home/pi/Desktop/iot-a3/python/playground/" + pName + "_" +  pDataType + ".json") as json_file:
              for jsonObj in json_file:
                 dataPoint = json.loads(jsonObj)
                 array.append(dataPoint)
         #print(array)
         dataArray = []
-        print("--------------Getting " + pDataType + " values from each JSON Decoded Object in JSON File--------------")
+        for actualArray in array:
+            dataArray = actualArray
+        i = 0
+        print("--------------Getting number of JSON objects in " + pName + " " + pDataType + "--------------")
+        for data in dataArray:
+            i = i + 1
+            #print(data["id"], data["client_addr"], data["timestamp"], data["value"])
+        #for value in valueArray:
+            #print(value)
+        print(i)
+        return i
+    
+    def read_json_from_file(self, pName, pDataType):
+        print("-----------------Reading JSON File---------------")
+        with open("/home/pi/Desktop/iot-a3/python/playground/" + pName + "_" +  pDataType + ".json") as json_file:
+            print(json_file)
+            data = json.load(json_file)
+            print(data)
+            return data
+        
+    def convert_jsonfile_to_array(self, pName, pDataType):
+        array = []
+        #print("-----------------Converting JSON objects into Array---------------")
+        with open("/home/pi/Desktop/iot-a3/python/playground/" + pName + "_" +  pDataType + ".json") as json_file:
+             for jsonObj in json_file:
+                dataPoint = json.loads(jsonObj)
+                array.append(dataPoint)
+        #print(array)
+        dataArray = []
+        print("--------------Getting " + pName + " " + pDataType + " values from each JSON Decoded Object in JSON File--------------")
         for actualArray in array:
             dataArray = actualArray
         valueArray = []
@@ -181,12 +202,21 @@ class JsonDataProcessor:
         return self.__fanIsOn
 
 if __name__ == '__main__':
+    dataController = DataController("josh")
+    userFileName = dataController.get_name()
     json_processor = JsonDataProcessor()
     json_processor.update_DataToProcess("""{"temp":5.0,"humidity":40.0}""")
     #json_processor.append_actuator_data_to_json(200, True)
     #json_processor.key_exists("motorPos")
-    data = json_processor.read_json_from_file("humidity")
-    dataArray = json_processor.convert_jsonfile_to_array("humidity")
-    json_processor.get_max_id_of_object(data)
+    #data = json_processor.read_json_from_file(userFileName, "humidity")
+    num_of_temp_objects = json_processor.get_num_of_json_objects_from_file(userFileName, "temperature")
+    num_of_humidity_objects = json_processor.get_num_of_json_objects_from_file(userFileName, "humidity")
+    
+    print("###Temperature data points:" + str(num_of_temp_objects) + "\n")
+    print("###Humidity data points:" + str(num_of_humidity_objects) + "\n")
+    
+    dataArray = json_processor.convert_jsonfile_to_array(userFileName, "humidity")
+    dataArray = json_processor.convert_jsonfile_to_array(userFileName, "temperature")
+   # json_processor.get_max_id_of_object(data)
 #    json_processor.key_exists("fanIsOn")
     
