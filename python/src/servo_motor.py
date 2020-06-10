@@ -71,20 +71,20 @@ class ServoDevice:
             time.sleep(speedRateLimiter)
             
     def test_range_of_motion(self):
-        servo_device.sweep_motor()
-        servo_device.servo.max()
+        self.sweep_motor()
+        self.servo.max()
         time.sleep(1)
-        servo_device.servo.mid()
+        self.servo.mid()
         time.sleep(1)
-        servo_device.servo.min()
+        self.servo.min()
         time.sleep(1)
-        servo_device.servo.detach()
+        self.servo.detach()
         
     def test_calculation(self, data):
         newPos = servo_device.calculatePosFromTemp(data)
-        servo_device.move_servo(newPos)
+        self.move_servo(newPos)
         time.sleep(1)
-        servo_device.servo.detach()
+        self.servo.detach()
         
 if __name__=="__main__":
     servo_device = ServoDevice(80)

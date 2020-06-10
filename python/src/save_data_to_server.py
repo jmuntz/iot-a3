@@ -29,7 +29,9 @@ def save_data_val(pString, pJsondataasbytes):
         
         my_json = json.loads(txt_response)
         print(my_json)
-        
+
+
+
 def save_temp_humidity(pJson_databytes):
     time.sleep(10)
     save_data_val('temperature', pJson_databytes)
@@ -47,7 +49,7 @@ def read_serial():
             data = ser.readline().decode('utf-8').rstrip(' ')
             print("SERIAL DATA: " + "["+data+"]")
             json_data = json.loads(data)
-            ahk 
+             
             temperature = json_data["temp"]
             time.sleep(1)
 

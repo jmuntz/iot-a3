@@ -13,7 +13,7 @@ class PhysicalSystemConfiguration:
         time.sleep(10)
         r = requests.get(url)
         req = urllib.request.Request(url)
-        time.sleep(2)
+        time.sleep(10)
         parsed = urllib.request.urlopen(req).read()
         self.__config = json.loads(parsed.decode('utf-8'))
         
@@ -28,7 +28,7 @@ class PhysicalSystemConfiguration:
         return self.__config["motorPosition"]
 
     def extract_fanIsOn(self):
-        return self.__config["fanOn"]
+        return self.__config["fanSpeed"]
 
     def extract_status(self):
         if ("status" in self.__config):

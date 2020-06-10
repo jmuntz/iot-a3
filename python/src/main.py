@@ -2,7 +2,7 @@ import sys
 sys.path.insert(1, './src')
 
 #from dc_motor import *
-from runFan import Fan
+from fan import Fan
 from servo_motor import ServoDevice
 
 # this working_sample needs improvement
@@ -23,14 +23,14 @@ def set_actuator_parameters(sysConfig, pFan, pServo,  pTemperature):
         fanIsOn = pFan.runFanwithTemperature(float(pTemperature))
     elif(sysConfig.extract_status() == "ON"):
         #input values for actuators from config file
-        servoConfigPos = sysConfig.extract_motorPos()
-        fanConfigIsOn = sysConfig.extract_fanIsOn()
+        servoConfigPos = float(sysConfig.extract_motorPos())
+        fanConfigIsOn = float(sysConfig.extract_fanIsOn())
         
         pServo.move_servo(servoConfigPos)        
         pFan.setFanSpeed(fanConfigIsOn)
 
-        newMotorPos = 0
-        fanIsOn = 100
+        newMotorPos = servoConfigPos
+        fanIsOn = fanConfigIsOn
         
     elif(sysConfig.extract_status() == "TEST"):
         #test but actuators to see if they are working. This should always work
@@ -38,8 +38,6 @@ def set_actuator_parameters(sysConfig, pFan, pServo,  pTemperature):
         pFan.testFan()
         newMotorPos = 0
         fanOn = 100
-        
-        
     elif(sysConfig.extract_status() == "SWEEP"):
         #test only the servo. Fan runs based on temperature values
         pServo.sweep_motor()

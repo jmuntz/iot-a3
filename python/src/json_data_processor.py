@@ -1,5 +1,6 @@
 import json
-
+import sys
+sys.path.insert(1, '../playground')
 
 class JsonDataProcessor:
     
@@ -82,6 +83,52 @@ class JsonDataProcessor:
         #print(self.__json_string)
         return self.__json_dictionary
         
+    def convert_temp_data_into_Array(self, data):
+        print("-----------------OLD CODE: Converting json data to array---------------")
+        #get max id in json object
+        #event = max(data['id'])
+        event = max(data, key=lambda ev: ev['id'])
+        print(event)
+        #latest_temp_id
+        #latest_humidity_id
+        #from in range(latest_temp_id)
+    
+    def get_max_id_of_object(self, data):
+        event = max(data, key=lambda ev: ev['id'])
+        print(event["id"])
+    
+    def read_json_from_file(self, pDataType):
+        print("-----------------Reading JSON File---------------")
+        with open("/home/pi/Desktop/iot-a3/python/playground/" + pDataType + ".json") as json_file:
+            print(json_file)
+            data = json.load(json_file)
+            print(data)
+            return data
+        
+    def convert_jsonfile_to_array(self, pDataType):
+        array = []
+        #print("-----------------Converting JSON objects into Array---------------")
+        with open("/home/pi/Desktop/iot-a3/python/playground/" + pDataType + ".json") as json_file:
+             for jsonObj in json_file:
+                dataPoint = json.loads(jsonObj)
+                array.append(dataPoint)
+        #print(array)
+        dataArray = []
+        print("--------------Getting " + pDataType + " values from each JSON Decoded Object in JSON File--------------")
+        for actualArray in array:
+            dataArray = actualArray
+        valueArray = []
+        for data in dataArray:
+            #print(data["id"], data["client_addr"], data["timestamp"], data["value"])
+            valueArray.append(int(data["value"]))
+        #for value in valueArray:
+            #print(value)
+        
+        return valueArray
+    
+    
+        
+    
     ### Getters and Setters ###    
     def set_data(self, pData):
         self.__data = pData
@@ -126,7 +173,7 @@ class JsonDataProcessor:
      
     def get_motorPos(self): 
         return self.__motorPos
-        
+    
     def set_fanIsOn(self, fanIsOn):
         self.__fanIsOn = fanIsOn
 
@@ -136,7 +183,10 @@ class JsonDataProcessor:
 if __name__ == '__main__':
     json_processor = JsonDataProcessor()
     json_processor.update_DataToProcess("""{"temp":5.0,"humidity":40.0}""")
-    json_processor.append_actuator_data_to_json(200, True)
-    json_processor.key_exists("motorPos")
+    #json_processor.append_actuator_data_to_json(200, True)
+    #json_processor.key_exists("motorPos")
+    data = json_processor.read_json_from_file("humidity")
+    dataArray = json_processor.convert_jsonfile_to_array("humidity")
+    json_processor.get_max_id_of_object(data)
 #    json_processor.key_exists("fanIsOn")
     
