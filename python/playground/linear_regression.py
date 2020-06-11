@@ -237,7 +237,26 @@ def variance(data_type: str, lukeDataArray, joshDataArray):
     variance_josh =  joshDataArray.var()
     print("-----------" + data_type + "variance of Josh' data --------------------" )
     print(variance_josh)
-  
+    
+def variance_between_data_sets(lukeDataArray, joshDataArray):
+    variance_array = []
+    arrayLength = len(lukeDataArray)
+    for i in range(arrayLength):
+        tempVarianceArray = np.array([lukeDataArray[i], joshDataArray[i]])
+        new_variance =  tempVarianceArray.var()
+        #            varianceArray.append(lukeDataArray[i], joshDataArray[i])
+        variance_array.append(new_variance)
+    return variance_array
+        
+def plot_variance(variance_array, pFigNum):
+    plt.figure(pFigNum)
+    dataPointArray = []
+    for i in range(len(variance_array)):
+        dataPointArray.append(i)
+    graphName = "Variance between each datapoint of both temperature sensor values"
+    graphLine(dataPointArray, variance_array, graphName, pFigNum, "blue")
+
+
 def standard_deviation(data_type: str, lukeDataArray, joshDataArray):
     variance_luke =  lukeDataArray.std()
     print("=================" + data_type + "Standard Deviation  of Lukes data =================" )
@@ -269,7 +288,11 @@ if __name__ == "__main__":
 
     variance("Temperature: ", temperature_luke, temperature_josh)
     variance("Humidity: ", humidity_luke, humidity_josh)
-
+    new_variance_array = variance_between_data_sets(temperature_luke, temperature_josh)
+   # startingFigNumber = startingFigNumber + 1
+    plot_variance(new_variance_array, startingFigNumber)
+    startingFigNumber = startingFigNumber + 1
+    
     standard_deviation("Temperature: ", temperature_luke, temperature_josh)
     standard_deviation("Humidity: ", humidity_luke, humidity_josh)
 
