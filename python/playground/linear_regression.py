@@ -1,6 +1,6 @@
 import numpy as np
 from sklearn.linear_model import LinearRegression
-from sklearn.linear_model import PolynomialFeatures
+from sklearn.preprocessing import PolynomialFeatures
 
 import time
 # importing the required module 
@@ -49,13 +49,13 @@ def tutorial_lr():
     
     ###Predict results( this will also be in a function below get_results()
     y_pred = model.predict(x)
-    print('predicted response:', y_pred, sep='\n')
+   # print('predicted response:', y_pred, sep='\n')
     
     x_new = np.arange(5).reshape((-1, 1))
-    print(x_new)
+    #print(x_new)
     
     y_new = model.predict(x_new)
-    print(y_new)
+   # print(y_new)
     
 def get_data_from_json(pfileHostName):
     data_controller = DataController(pfileHostName)
@@ -79,10 +79,16 @@ def update_data_from_server(pfileHostName):
     data_controller.writeToFile(temperature, "temperature.json")
     
    
-def graphScatter(x, y, pName, pFig:int):
+def graphScatter(x, y, pName, pFig:int, pColor: str):
     #plt.figure(pFig)
-    plt.scatter(x, y, label= "stars", color= "green",  
-            marker= "*", s=30) 
+    plt.scatter(x, y, label= "stars", color= pColor,  
+            marker= "*")
+    xStr = str(x)
+    yStr = str(y)
+    dataController = DataController("./data/data_saver")
+    dataController.writeToFile(xStr, "x_data_" + pName + ".json")
+    dataController.writeToFile(yStr,  "y_data_" + pName + ".json")
+
     
     # naming the x axis 
     plt.xlabel('temperature - axis') 
@@ -95,10 +101,16 @@ def graphScatter(x, y, pName, pFig:int):
     # function to show the plot 
     #plt.show()
     
-def graphLine(x, y, pName, pFig:int):
-    plt.figure(pFig)
-    plt.plot(x, y, label= "dots", color= "blue")
+def graphLine(x, y, pName, pFig:int, pColor: str):
+    #plt.figure(pFig)
+    plt.plot(x, y, label= "dots", color= pColor)
     
+    xStr = str(x)
+    yStr = str(y)
+    dataController = DataController("./data/data_saver")
+    dataController.writeToFile(xStr, "x_data_" + pName + ".json")
+    dataController.writeToFile(yStr,  "y_data_" + pName + ".json")
+
     # naming the x axis 
     plt.xlabel('temperature - axis') 
     # naming the y axis 
@@ -110,7 +122,9 @@ def graphLine(x, y, pName, pFig:int):
     # function to show the plot 
     #plt.show() 
 
-def temp_humidity_lr(pHostUserName):
+
+
+def temp_humidity_lr(pHostUserName, pFigNum):
     #json_processor = JsonDataProcessor()
     #data collection
     #temperatureArray = json_processor.convert_jsonfile_to_array("temperature")
@@ -140,26 +154,27 @@ def temp_humidity_lr(pHostUserName):
     
     ###Predict results( this will also be in a function below get_results()
     humidity_pred = model.predict(temperature)
-    print('predicted response:', humidity_pred, sep='\n')
+    #print('predicted response:', humidity_pred, sep='\n')
     time.sleep(1)
-    predictedName = hostUserName + " - Predicted humidity values from Linear Regression based on orignal temperature values"
-    graphLine(temperature, humidity_pred, predictedName, 2)
+    predictedName = pHostUserName + " - Predicted humidity values from Linear Regression based on orignal temperature values"
+    plt.figure(pFigNum)
+    pFigNum = pFigNum + 1
+    graphLine(temperature, humidity_pred, predictedName, pFigNum, "blue")
     time.sleep(1)
-    predictedName = hostUserName + " - Orignal recorded datapoint values"
-    graphScatter(temperature, humidity, dataName, 3)
+    dataName = pHostUserName + " - Orignal recorded datapoint values"
+    graphScatter(temperature, humidity, dataName, pFigNum, "green")
     #time.sleep(1)
     
     temperature_new = np.arange(5, 45, 0.05).reshape((-1, 1))
-    print(temperature_new)
     
     humidity_new = model.predict(temperature_new)
     #print(humidity_new)
     newName = hostUserName + " - Predicied humidity values from Linear Regression"
-    graphLine(temperature_new, humidity_new, newName, 2)
+    graphLine(temperature_new, humidity_new, newName, pFigNum, "pink")
 
-    return temperature_new, humidity_new
+    return temperature, humidity, pFigNum
 
-def temp_humidity_polynom_regression(pHostUserName):
+def temp_humidity_polynom_regression(pHostUserName, pFigNum):
     temperatureArray, humidtyArray = get_data_from_json(pHostUserName)
     
     #data processing: Temp(predictor) is independant and humidity(regressor) is dependant on temperature
@@ -177,8 +192,8 @@ def temp_humidity_polynom_regression(pHostUserName):
     transformer.fit(temperature)
     # new modified input
     temperature_ = transformer.transform(temperature)
-    print("----- Polynomial Transformed X values ------")
-    print(temperature_)
+    #print("----- Polynomial Transformed X values ------")
+   # print(temperature_)
     
     
     ### -----------------------modelling data from Linear Regression model -----------------------###
@@ -197,20 +212,40 @@ def temp_humidity_polynom_regression(pHostUserName):
     
     ###Predict results( this will also be in a function below get_results()
     humidity_pred = model.predict(temperature_)
-    print('predicted response:', humidity_pred, sep='\n')
-    polyGraphName = "Polynomial prediction - Temperature and humidity" 
-    graphLine(temperature_, humidity_pred, polyGraphName, 1)
-    graphScatter(temperature, humidity, polyGraphName, 1)
+  #  print('predicted response:', humidity_pred, sep='\n')
+    polyGraphName = pHostUserName + " - Polynomial prediction - Temperature and humidity"
+    plt.figure(pFigNum)
+    pFigNum = 1 + pFigNum
+    graphLine(temperature_[:, 0], humidity_pred, polyGraphName, pFigNum, "blue")
+    #graphScatter(temperature_[:, 0], humidity_pred, polyGraphName, pFigNum, "green")
+    orignalDataPolyName = pHostUserName + " - Polynomial orignal data - Temperature and humidity"
+    graphScatter(temperature, humidity, orignalDataPolyName, pFigNum, "pink")
     newName = hostUserName + "Prediciedt humidity values from Linear Regression"
 
     #40/0.05 = 800 which is same number of datpoints being analysed
-    temperature_new = np.arange(5, 45, 0.05).reshape((-1, 1))
-    print(temperature_new)
-    
-    humidity_new = model.predict(temperature_new)
+   # temperature_new = np.arange(5, 45, 0.05).reshape((-1, 1))    
+   #humidity_new = model.predict(temperature_new)
     #print(humidity_new)
     
-    return temperature_new, humidity_new
+    return temperature, humidity, pFigNum
+
+def variance(data_type: str, lukeDataArray, joshDataArray):
+    variance_luke =  lukeDataArray.var()
+    print("-----------" + data_type + "variance of Lukes data --------------------" )
+    print(variance_luke)
+    
+    variance_josh =  joshDataArray.var()
+    print("-----------" + data_type + "variance of Josh' data --------------------" )
+    print(variance_josh)
+  
+def standard_deviation(data_type: str, lukeDataArray, joshDataArray):
+    variance_luke =  lukeDataArray.std()
+    print("=================" + data_type + "Standard Deviation  of Lukes data =================" )
+    print(variance_luke)
+    
+    variance_josh =  joshDataArray.std()
+    print("=================" + data_type + "Standard Deviation  of Josh' data =================" )
+    print(variance_josh)
 
 def predict_response(model): 
     y_pred = model.predict(x)
@@ -219,46 +254,25 @@ def predict_response(model):
 if __name__ == "__main__":
     #tutorial()
     #plt_test()
+    ### Use th enext twoi lines to update files from online database
     #update_data_from_server("luke")
-    arrayDatax = []
-    arrayDatay = []
-    for i in range(800):
-        arrayDatax.append(randrange(5, 45))
-        arrayDatay.append(randrange(90))
-        
-   # hostUserName = "luke"
-    tempearature_new, humidity_new = temp_humidity_lr(hostUserName)
-    #newName = hostUserName + "Prediciedt humidity values from Linear Regression"
-    # actual temp and humidity data aobservvations
-    #temperature_data, humidity_data = get_data_from_json(hostUserName)
-   # print("##Size of Temperature Array: " + str(len(temperature_data)))
-   # print("##Size of Humidity Array: " + str(len(humidity_data)))
-    
-   # dataName = hostUserName + "recorded data values"
-    #plt_tutorial()
-    
-  #  graphLine(tempearature_new, humidity_new, newName, 2)
-   # time.sleep(1)
-   # graphScatter(temperature_data, humidity_data, dataName, 3)
-   # time.sleep(1)
+   # update_data_from_server("josh")
+   
+    hostUserName = "luke"
+    startingFigNumber = 1
+    temperature_luke, humidity_luke, startingFigNumber = temp_humidity_lr(hostUserName, startingFigNumber)
+    temperature_luke, humidity_new, startingFigNumber = temp_humidity_polynom_regression(hostUserName, startingFigNumber)
     
     hostUserName = "josh"
-    #tempearature_new, humidity_new = temp_humidity_lr(hostUserName)
-    #newName = hostUserName + "Prediciedt humidity values from Linear Regression"
-    # actual temp and humidity data aobservvations
-    #temperature_data, humidity_data = get_data_from_json(hostUserName)
-    
-    #dataName = hostUserName + "recorded data values"
-    #plt_tutorial()
-   # print("##Size of Temperature Array: " + str(len(temperature_data)))
-   # print("##Size of Humidity Array: " + str(len(humidity_data)))
-    
-    #graphLine(tempearature_new, humidity_new, newName, 4)
-   # time.sleep(1)
-   # graphScatter(temperature_data, humidity_data, dataName, 5)
-    #time.sleep(1)
-    #graphScatter(arrayDatax, arrayDatay, "testData", 6)
-    time.sleep(1)
+    temperature_josh, humidity_josh, startingFigNumber = temp_humidity_lr(hostUserName, startingFigNumber)
+    temperature_new, humidity_new, startingFigNumber = temp_humidity_polynom_regression(hostUserName, startingFigNumber)
+
+    variance("Temperature: ", temperature_luke, temperature_josh)
+    variance("Humidity: ", humidity_luke, humidity_josh)
+
+    standard_deviation("Temperature: ", temperature_luke, temperature_josh)
+    standard_deviation("Humidity: ", humidity_luke, humidity_josh)
+
     plt.show()
     
 

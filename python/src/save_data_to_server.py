@@ -12,7 +12,6 @@ import random
 randnum = random.randint(10,26)
 server = 'https://iot.porky.dev/ass3/app'
 
-
 # posty = requests.post(host + '/functions.php', params=test_data, headers = {"User-Agent": "Firefox/12.0"});
 
 

@@ -6,7 +6,8 @@ from get_data import DataController
 class JsonDataProcessor:
     
     data = "{'temp':0.0,'humidity':0.0}"
-
+    macDir = '/Users/luke/Desktop/cloud/code/uni/iot/iot-a3/python/playground'
+    piDir = "/home/pi/Desktop/iot-a3/python/playground/"
     
     def __init__(self):
         self.__data = {"temp":0.0,"humidity":0.0}
