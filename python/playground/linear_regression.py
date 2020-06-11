@@ -1,5 +1,7 @@
 import numpy as np
 from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import PolynomialFeatures
+
 import time
 # importing the required module 
 import matplotlib.pyplot as plt 
@@ -9,7 +11,7 @@ sys.path.insert(1, '../src')
 from json_data_processor import JsonDataProcessor
 from get_data import DataController
 
-import random
+from random import randrange
 
 
 def tutorial_lr():
@@ -139,7 +141,69 @@ def temp_humidity_lr(pHostUserName):
     ###Predict results( this will also be in a function below get_results()
     humidity_pred = model.predict(temperature)
     print('predicted response:', humidity_pred, sep='\n')
+    time.sleep(1)
+    predictedName = hostUserName + " - Predicted humidity values from Linear Regression based on orignal temperature values"
+    graphLine(temperature, humidity_pred, predictedName, 2)
+    time.sleep(1)
+    predictedName = hostUserName + " - Orignal recorded datapoint values"
+    graphScatter(temperature, humidity, dataName, 3)
+    #time.sleep(1)
     
+    temperature_new = np.arange(5, 45, 0.05).reshape((-1, 1))
+    print(temperature_new)
+    
+    humidity_new = model.predict(temperature_new)
+    #print(humidity_new)
+    newName = hostUserName + " - Predicied humidity values from Linear Regression"
+    graphLine(temperature_new, humidity_new, newName, 2)
+
+    return temperature_new, humidity_new
+
+def temp_humidity_polynom_regression(pHostUserName):
+    temperatureArray, humidtyArray = get_data_from_json(pHostUserName)
+    
+    #data processing: Temp(predictor) is independant and humidity(regressor) is dependant on temperature
+    temperature = np.array(temperatureArray).reshape((-1, 1))
+    humidity = np.array(humidtyArray)
+
+    #print(temperature)
+    #print(humidity)
+
+    ###-----------------------polynomial feature transformation -----------------------###
+    #interactio paramater is false by defult. Will include only interactive features
+    #incelude_bias chooses whether or not to include intercept column 
+    transformer = PolynomialFeatures(degree=2, include_bias=False)
+    #fit transformer with independant variable
+    transformer.fit(temperature)
+    # new modified input
+    temperature_ = transformer.transform(temperature)
+    print("----- Polynomial Transformed X values ------")
+    print(temperature_)
+    
+    
+    ### -----------------------modelling data from Linear Regression model -----------------------###
+    model = LinearRegression()
+
+    #calcu-latte(ha-ha) optimum weights
+    model.fit(temperature_, humidity)
+    
+    #score are predictor x and regressor y
+    r_sq = model.score(temperature_, humidity)
+    print('coefficient of determinaltion: ', r_sq)
+    
+    print('intercept:', model.intercept_)
+    
+    print('slope:', model.coef_)
+    
+    ###Predict results( this will also be in a function below get_results()
+    humidity_pred = model.predict(temperature_)
+    print('predicted response:', humidity_pred, sep='\n')
+    polyGraphName = "Polynomial prediction - Temperature and humidity" 
+    graphLine(temperature_, humidity_pred, polyGraphName, 1)
+    graphScatter(temperature, humidity, polyGraphName, 1)
+    newName = hostUserName + "Prediciedt humidity values from Linear Regression"
+
+    #40/0.05 = 800 which is same number of datpoints being analysed
     temperature_new = np.arange(5, 45, 0.05).reshape((-1, 1))
     print(temperature_new)
     
@@ -156,40 +220,45 @@ if __name__ == "__main__":
     #tutorial()
     #plt_test()
     #update_data_from_server("luke")
-    arrayData = []
+    arrayDatax = []
+    arrayDatay = []
     for i in range(800):
-        arrayData = 
-    hostUserName = "luke"
+        arrayDatax.append(randrange(5, 45))
+        arrayDatay.append(randrange(90))
+        
+   # hostUserName = "luke"
     tempearature_new, humidity_new = temp_humidity_lr(hostUserName)
-    newName = hostUserName + "Prediciedt humidity values from Linear Regression"
+    #newName = hostUserName + "Prediciedt humidity values from Linear Regression"
     # actual temp and humidity data aobservvations
-    temperature_data, humidity_data = get_data_from_json(hostUserName)
-    print("##Size of Temperature Array: " + str(len(temperature_data)))
-    print("##Size of Humidity Array: " + str(len(humidity_data)))
+    #temperature_data, humidity_data = get_data_from_json(hostUserName)
+   # print("##Size of Temperature Array: " + str(len(temperature_data)))
+   # print("##Size of Humidity Array: " + str(len(humidity_data)))
     
-    dataName = hostUserName + "recorded data values"
+   # dataName = hostUserName + "recorded data values"
     #plt_tutorial()
     
-    graphLine(tempearature_new, humidity_new, newName, 2)
-    time.sleep(1)
-    graphScatter(temperature_data, humidity_data, dataName, 3)
-    time.sleep(1)
+  #  graphLine(tempearature_new, humidity_new, newName, 2)
+   # time.sleep(1)
+   # graphScatter(temperature_data, humidity_data, dataName, 3)
+   # time.sleep(1)
     
     hostUserName = "josh"
-    tempearature_new, humidity_new = temp_humidity_lr(hostUserName)
-    newName = hostUserName + "Prediciedt humidity values from Linear Regression"
+    #tempearature_new, humidity_new = temp_humidity_lr(hostUserName)
+    #newName = hostUserName + "Prediciedt humidity values from Linear Regression"
     # actual temp and humidity data aobservvations
-    temperature_data, humidity_data = get_data_from_json(hostUserName)
+    #temperature_data, humidity_data = get_data_from_json(hostUserName)
     
-    dataName = hostUserName + "recorded data values"
+    #dataName = hostUserName + "recorded data values"
     #plt_tutorial()
-    print("##Size of Temperature Array: " + str(len(temperature_data)))
-    print("##Size of Humidity Array: " + str(len(humidity_data)))
+   # print("##Size of Temperature Array: " + str(len(temperature_data)))
+   # print("##Size of Humidity Array: " + str(len(humidity_data)))
     
-    graphLine(tempearature_new, humidity_new, newName, 4)
+    #graphLine(tempearature_new, humidity_new, newName, 4)
+   # time.sleep(1)
+   # graphScatter(temperature_data, humidity_data, dataName, 5)
+    #time.sleep(1)
+    #graphScatter(arrayDatax, arrayDatay, "testData", 6)
     time.sleep(1)
-    graphScatter(temperature_data, humidity_data, dataName, 5)
-    time.sleep(5)
     plt.show()
     
 
