@@ -1,3 +1,6 @@
+* {
+    font-family: sans-serif;
+}
 form {
 	margin: auto;
     text-align: center;
@@ -112,7 +115,6 @@ body {
 
 .hero h1 {
     text-align: center;
-    font-size: 16px;
     width: 100%;
 }
 
