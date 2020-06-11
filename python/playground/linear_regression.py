@@ -258,11 +258,11 @@ def plot_variance(variance_array, pFigNum):
 
 def plot_original_data_with_mean(arr1, arr2, pFigNum):
     plt.figure(pFigNum)
-    arr1.
+    #arr1.mean()
     graphName = "Scatter plot of temperature from both sensors"
-    graphLine(dataPointArray, variance_array, graphName, pFigNum, "blue")
+   # graphLine(dataPointArray, variance_array, graphName, pFigNum, "blue")
     graphName = "Variance between each datapoint of both temperature sensor values"
-    graphLine(dataPointArray, variance_array, graphName, pFigNum, "blue")
+    #graphLine(dataPointArray, variance_array, graphName, pFigNum, "blue")
 
 
 def standard_deviation(data_type: str, lukeDataArray, joshDataArray):
