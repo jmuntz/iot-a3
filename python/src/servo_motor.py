@@ -7,7 +7,7 @@ import time
 class ServoDevice:
     servo_pin = 17
     
-    def __init__(self, servo_position=0):      
+    def __init__(self, servo_position=-1):      
         self.servo = Servo(self.servo_pin)
        # self.move_servo(servo_position)
     
@@ -87,7 +87,7 @@ class ServoDevice:
         self.servo.detach()
         
 if __name__=="__main__":
-    servo_device = ServoDevice(80)
+    servo_device = ServoDevice(-1)
     servo_device.test_range_of_motion()
     #servo_device.test_calculation(20)
     #while(True):

@@ -256,6 +256,14 @@ def plot_variance(variance_array, pFigNum):
     graphName = "Variance between each datapoint of both temperature sensor values"
     graphLine(dataPointArray, variance_array, graphName, pFigNum, "blue")
 
+def plot_original_data_with_mean(arr1, arr2, pFigNum):
+    plt.figure(pFigNum)
+    arr1.
+    graphName = "Scatter plot of temperature from both sensors"
+    graphLine(dataPointArray, variance_array, graphName, pFigNum, "blue")
+    graphName = "Variance between each datapoint of both temperature sensor values"
+    graphLine(dataPointArray, variance_array, graphName, pFigNum, "blue")
+
 
 def standard_deviation(data_type: str, lukeDataArray, joshDataArray):
     variance_luke =  lukeDataArray.std()
@@ -266,9 +274,6 @@ def standard_deviation(data_type: str, lukeDataArray, joshDataArray):
     print("=================" + data_type + "Standard Deviation  of Josh' data =================" )
     print(variance_josh)
 
-def predict_response(model): 
-    y_pred = model.predict(x)
-    print('predicted response:', y_pred, sep='\n')
 
 if __name__ == "__main__":
     #tutorial()
@@ -280,11 +285,11 @@ if __name__ == "__main__":
     hostUserName = "luke"
     startingFigNumber = 1
     temperature_luke, humidity_luke, startingFigNumber = temp_humidity_lr(hostUserName, startingFigNumber)
-    temperature_luke, humidity_new, startingFigNumber = temp_humidity_polynom_regression(hostUserName, startingFigNumber)
+    temperature_luke, humidity_luke, startingFigNumber = temp_humidity_polynom_regression(hostUserName, startingFigNumber)
     
     hostUserName = "josh"
     temperature_josh, humidity_josh, startingFigNumber = temp_humidity_lr(hostUserName, startingFigNumber)
-    temperature_new, humidity_new, startingFigNumber = temp_humidity_polynom_regression(hostUserName, startingFigNumber)
+    temperature_josh, humidity_josh, startingFigNumber = temp_humidity_polynom_regression(hostUserName, startingFigNumber)
 
     variance("Temperature: ", temperature_luke, temperature_josh)
     variance("Humidity: ", humidity_luke, humidity_josh)

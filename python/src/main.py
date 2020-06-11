@@ -13,14 +13,22 @@ from json_data_processor import JsonDataProcessor
 from get_config import PhysicalSystemConfiguration
 from save_data_to_server import save_temp_humidity
 
-def set_actuator_parameters(sysConfig, pFan, pServo,  pTemperature):
+def set_actuator_parameters(sysConfig, pFan, pServo):
         #set actuator parameters(based on temperature values)
+    json_processor = JsonDataProcessor()
     fanOn = 0
     newMotorPos = 0
     if(sysConfig.extract_status() == "OFF"):
+        serial_data = read_serial()
+        json_data = json_processor.update_DataToProcess(serial_data)        
+        #sends data to table in DB
+        save_temp_humidity(json_processor.get_json_databytes())
+        
+        #Sets actuator parameters
+        temperature = json_processor.get_temperature()
         #input values for both actuators based on temperature
-        newMotorPos = pServo.calculatePosFromTemp(pTemperature)
-        fanIsOn = pFan.runFanwithTemperature(float(pTemperature))
+        newMotorPos = pServo.calculatePosFromTemp(temperature)
+        fanIsOn = pFan.runFanwithTemperature(float(temperature))
     elif(sysConfig.extract_status() == "ON"):
         #input values for actuators from config file
         servoConfigPos = float(sysConfig.extract_motorPos())
@@ -41,7 +49,7 @@ def set_actuator_parameters(sysConfig, pFan, pServo,  pTemperature):
     elif(sysConfig.extract_status() == "SWEEP"):
         #test only the servo. Fan runs based on temperature values
         pServo.sweep_motor()
-        pFan.runFanwithTemperature(float(pTemperature))
+        pFan.runFanwithTemperature(float(temperature))
         newMotorPos = 0
         fanOn = 100
     return newMotorPos, fanOn
@@ -58,19 +66,13 @@ def mainFunction():
         # get online configuration of physical system
         sysConfig.get_config()
         
-        serial_data = read_serial()
-        json_data = json_processor.update_DataToProcess(serial_data)        
-        #sends data to table in DB
-        save_temp_humidity(json_processor.get_json_databytes())
-        
-        #Sets actuator parameters
-        temperature = json_processor.get_temperature()
-        newMotorPos, fanOn = set_actuator_parameters(sysConfig, fan, servo_device, temperature)
+
+        newMotorPos, fanOn = set_actuator_parameters(sysConfig, fan, servo_device)
 
         ### CAN DELETE BELOW TO MAKE CODE PRETTIER: append new actuator data to json
-        json_processor.append_actuator_data_to_json(newMotorPos, fanOn)
-        json_string = json_processor.get_json_string()
-        print(json_string)
+       # json_processor.append_actuator_data_to_json(newMotorPos, fanOn)
+        #json_string = json_processor.get_json_string()
+        #print(json_string)
         i = i + 1
 
 def mainSaveData():
