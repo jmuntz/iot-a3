@@ -3,7 +3,7 @@
 <html lang="en" dir="ltr">
 	<head>
 		<meta charset="utf-8">
-		<title></title>
+		<title>IoT Sensor Project</title>
 	</head>
 	<link rel="stylesheet" href="./assets/stylesheet.css">
 	<body>
@@ -24,146 +24,57 @@
 		</ul>
 		<ul class="nav chart">
 			<li><strong>Charts</strong></li>
-			<li><a href="./charts/latest.php">Latest</a></li>
-			<li><a href="./charts/mean.php">Mean</a></li>
-			<li><a href="./charts/median.php">Median</a></li>
+			<li><a href=<?php echo '"'.$root_URL .'/charts/latest.php"'; ?>>Latest</a></li>
+			<li><a href=<?php echo '"'.$root_URL .'/charts/mean.php"'; ?>>Mean</a></li>
+			<li><a href=<?php echo '"'.$root_URL .'/charts/median.php"'; ?>>Median</a></li>
+			<li><a href=<?php echo '"'.$root_URL .'/api/update/config.php"'; ?>>Config</a></li>
 		</ul>
 		<ul class="nav todo">
 			<li><strong>todo's</strong>
-			<li>Build out median chart</li>
-			<li>Build out mean chart</li>
-			<li>Add humidity to latest chart chart</li>
+			<li style="text-decoration: line-through;">Build out median chart</li>
+			<li style="text-decoration: line-through;">Build out mean chart</li>
+			<li style="text-decoration: line-through;">Add humidity to <em>latest</em> chart chart</li>
+			<li style="text-decoration: line-through;">Add feature to allow actuator to act based on temperature</li>
+			<li style="text-decoration: line-through;"> - needs to be editable via website</li>
+			<li> Report</li>
 		</ul>
 		<h3>You're logged in!</h3>
 		<div class="hero">
 			<h1>Some c00l statz</h1>
-			<div id="temp"><span class="value"><?php //echo round($most_recent['temp'], 2); ?>66°c</span><small>temperature</small></div>
-			<div id="humidity"><span class="value"><?php //echo $most_recent['humidity']; ?>66</span><small>humidity</small></div>
+			<div id="temp"><span class="value"></span><small>temperature</small></div>
+			<div id="humidity"><span class="value"></span><small>humidity</small></div>
 			<p>Here we can showcase some hero stats such as median, mean, highest temp etc</p>
+			<br><br>
 		</div>
-		<div class="charts">
-			<div class="chart">
-				<h2> Temperature</h2>
-				<canvas id="tempChart" style="max-width: 500px; max-height: 500px;"></canvas>
-			</div>
-			<div class="chart">
-				<h2>Humidity</h2>
-				<canvas id="humChart" style="max-width: 500px; max-height: 500px;"></canvas>
-			</div>
-		</div>
+
 		<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
 		<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
-		<script>
-			let clients = [];
-			let tempJSON;
-			let humJSON;
-			let temp_values = [];
-			let hum_values = [];
-			function getTotalHosts() {
-				fetch('//iot.porky.dev/ass3/app/api/get/hosts')
-				.then(response => response.json())
-				.then(function(data) {
-					clients = data;
-				})
-			}
-			function generateDatasets() {
-					let temp_dataset 	= [];
-					let hum_dataset 	= [];
-				let boss_data = {};
-				var promise = new Promise(function(resolve, reject) {
-					getTotalHosts();
-					setTimeout(function() {
-						clients.forEach((client, i) => {
-							dataset = {};
-							arr = [];
-							tempJSON.forEach((data, i) => {
-								if (data.host == client)
-									arr.push(data.data);
-							});
-							dataset.host = client;
-							dataset.data = arr;
-							temp_dataset.push(dataset);
-							dataset = {};
-							arr = [];
-							humJSON.forEach((data, i) => {
-								if (data.host == client)
-								arr.push(data.data);
-							});
-							dataset.host = client;
-							dataset.data = arr;
-							hum_dataset.push(dataset);
-						});
-						boss_data.temp = temp_dataset;
-						boss_data.hum = hum_dataset;
-						resolve(boss_data);
-					}, 1000); // set timeout to give fetches time to finish
-				});
-				return promise;
-			};
-			function getAll() {
-				return fetch('//iot.porky.dev/ass3/app/api/get')
-				.then(response => response.json())
-			}
-			getAll().then(function(data) {
-				console.log(data);
-			}).catch(function(error) {
-				console.log("getAll request failed.");
-			});
-			let labels = [];
-			for (i = 0; i < 25; i++) { labels[i] = i; }
-			var ctx_temp = document.getElementById('tempChart').getContext('2d');
-			var ctx_hum = document.getElementById('humChart').getContext('2d');
-			var chart_temp = new Chart(ctx_temp, {
-				type: 'line',
-				data: {
-					labels: labels,
-				},
-				options: {}
-			});
-			var chart_hum = new Chart(ctx_hum, {
-				type: 'line',
-				data: {
-					labels: labels,
-				},
-				options: {}
-			});
-			updateChart();
-			function updateChart() {
-					temp = {};
-					getAll().then(function(data) {
-						console.log(data);
-						console.log(data.temperature);
-						console.log(data.humidity);
-						dataset = [{}];
-						for(index in data.temperature) {
-							dataset[index] = {
-								label: "Host " + index,//data.temperature[index].host,
-								labels: labels,
-								borderColor: "red",
-								backgroundColor: 'transparent',
-								data: data.temperature[index].data
-							}
-						}
-						chart_temp.config.data.datasets = dataset;
-						dataset = [{}];
-						for(index in data.humidity) {
-							dataset[index] = {
-								label: "Host " + index,//data.humidity[index].host,
-								labels: labels,
-								borderColor: "purple",
-								backgroundColor: 'transparent',
-								data: data.humidity[index].data
-							}
-						}
-						chart_hum.config.data.datasets = dataset;
-						chart_hum.update();
-						chart_temp.update();
-					}).catch(function(error) {
-						console.log("getAll chart request failed.");
-					});
-			};
-		</script>
 		<?php endif; ?>
+
+		<script>	
+			
+			function getTemp() {
+				return fetch('https://iot.porky.dev/ass3/app/api/get/temperature/1')
+				.then(response => response.json())
+			}
+			function getHum() {
+				return fetch('https://iot.porky.dev/ass3/app/api/get/humidity/1')
+				.then(response => response.json())
+			}
+
+			getTemp().then(function(data) {
+				$("#temp .value").html(data[0].value + "c");
+			}).catch(function(error) {
+				console.log("getAll chart request failed.");
+			});
+
+			getHum().then(function(data) {
+				$("#humidity .value").html(data[0].value);
+			}).catch(function(error) {
+				console.log("getAll chart request failed.");
+			});
+
+		</script>
 	</body>
 </html>
