@@ -11,7 +11,7 @@ class GetController {
 	}
 
     /**
-     * Returns a JSON string object to the browser when hitting the root of the domain
+     * Returns a full data dump of every record in the database
      *
      * @url GET /
      */
@@ -36,7 +36,6 @@ class GetController {
 
  		   if (!empty($temp)) {
  			   $host = '';
- 			   $arr_t = array();
  			   $dataset = [];
  			   $dataset_t = [];
  			   $dataset_h = [];
@@ -85,7 +84,7 @@ class GetController {
     }
 
 	/**
-	 * Returns a JSON string object to the browser when hitting the root of the domain
+	 * Returns temperature data as a JSON object
 	 *
 	 * @url GET /temperature
 	 * @url GET /temperature
@@ -110,7 +109,7 @@ class GetController {
 	}
 
 	/**
-	 * Returns a JSON string object to the browser when hitting the root of the domain
+	 * Returns humidity data as a JSON object
 	 *
 	 * @url GET /humidity
 	 * @url GET /humidity/$limit
@@ -134,63 +133,51 @@ class GetController {
 
 
 
-		/**
-		 * Returns a JSON string object to the browser when hitting the root of the domain
-		 * Gets the unique number of hosts that have submitted data to server.
-		 * Only uses temp data for now.
-		 *
-		 * @url GET /hosts
-		 */
-		 public function getHosts() {
-	 		try {
-	 			$pdo = $this->db->generatePDO();
+	/**
+	 * Returns a JSON string object to the browser when hitting the root of the domain
+	 * Gets the unique number of hosts that have submitted data to server.
+	 * Only uses temp data for now.
+	 *
+	 * @url GET /hosts
+	 */
+	 public function getHosts() {
+ 		try {
+ 			$pdo = $this->db->generatePDO();
 
-	 			$sql = "SELECT DISTINCT(client_addr) FROM temperature";
+ 			$sql = "SELECT DISTINCT(client_addr) FROM temperature";
 
-				$hosts = array();
+			$hosts = array();
 
-	 			$getTemp = $pdo->prepare($sql);
-	 			$getTemp->execute();
-				$data = $getTemp->fetchAll(PDO::FETCH_ASSOC);
+ 			$getTemp = $pdo->prepare($sql);
+ 			$getTemp->execute();
+			$data = $getTemp->fetchAll(PDO::FETCH_ASSOC);
 
-				foreach($data as $key => $value)
-					array_push($hosts, $value['client_addr']);
-	 			return $hosts;
+			foreach($data as $key => $value)
+				array_push($hosts, $value['client_addr']);
+ 			return $hosts;
 
-	 		} catch (PDOException $e) {
-	 			$this->throwError($e->getMessage());
-	 		}
-	 	}
-
-		/**
-		 * Returns a JSON string object to the browser when hitting the root of the domain
-		 * Gets the unique number of hosts that have submitted data to server.
-		 * Only uses temp data for now.
-		 *
-		 * @url GET /config
-		 */
-		 public function getConfig() {
-	 		$url = './iot_config.json'; 
-			$data = file_get_contents($url); 
-			$characters = json_decode($data); 
-
-	 		return $characters;
-	 		// return 'test';
-	 	}
+ 		} catch (PDOException $e) {
+ 			$this->throwError($e->getMessage());
+ 		}
+ 	}
 
 
-    /**
-     * Get Charts
-     *
-     * @url GET /charts
-     * @url GET /charts/$id
-     * @url GET /charts/$id/$date
-     * @url GET /charts/$id/$date/$interval/
-     * @url GET /charts/$id/$date/$interval/$interval_months
-     */
-    public function getCharts($id=null, $date=null, $interval = 30, $interval_months = 12) {
-        echo "$id, $date, $interval, $interval_months";
-    }
+	/**
+	 * Returns a JSON string object to the browser when hitting the root of the domain
+	 * Gets the unique number of hosts that have submitted data to server.
+	 * Only uses temp data for now.
+	 *
+	 * @url GET /config
+	 */
+	 public function getConfig() {
+ 		$url = './iot_config.json'; 
+		$data = file_get_contents($url); 
+		$characters = json_decode($data); 
+
+ 		return $characters;
+ 		// return 'test';
+ 	}
+
 
     /**
      * Throws an error
