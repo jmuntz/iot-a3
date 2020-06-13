@@ -221,6 +221,7 @@ def temp_humidity_polynom_regression(pHostUserName, pFigNum):
     orignalDataPolyName = pHostUserName + " - Polynomial orignal data - Temperature and humidity"
     graphScatter(temperature, humidity, orignalDataPolyName, pFigNum, "pink")
     newName = hostUserName + "Prediciedt humidity values from Linear Regression"
+    
 
     #40/0.05 = 800 which is same number of datpoints being analysed
    # temperature_new = np.arange(5, 45, 0.05).reshape((-1, 1))    
@@ -237,6 +238,17 @@ def variance(data_type: str, lukeDataArray, joshDataArray):
     variance_josh =  joshDataArray.var()
     print("-----------" + data_type + "variance of Josh' data --------------------" )
     print(variance_josh)
+    
+def mean(data_type: str, lukeDataArray, joshDataArray):
+    mean_luke =  lukeDataArray.mean()
+    print("-----------" + data_type + "mean of Lukes data --------------------" )
+    print(mean_luke)
+    
+    mean_josh =  joshDataArray.mean()
+    print("-----------" + data_type + "mean of Josh' data --------------------" )
+    print(mean_josh)
+    
+
     
 def variance_between_data_sets(lukeDataArray, joshDataArray):
     variance_array = []
@@ -256,6 +268,49 @@ def plot_variance(variance_array, pFigNum):
     graphName = "Variance between each datapoint of both temperature sensor values"
     graphLine(dataPointArray, variance_array, graphName, pFigNum, "blue")
 
+def plot_original_data_with_mean(arr1, arr2, temparr1, temparr2, pFigNum):
+    plt.figure(pFigNum)
+    #arr1.mean()
+    dataPointArray = []
+    meanArr1 = []
+    meanArr2 = []
+    meanArr3 = []
+    arr1Mean  = np.mean(arr1)
+    arr2Mean = np.mean(arr2)
+    arr3 = np.concatenate((arr1, arr2))
+  #  arr3 = arr1 + arr2
+    print("length of both arrays put together")
+    print(len(arr3))
+    #arr5 = []
+    #for j in range(len(arr2)):
+    #    np.append(arr4, (arr2[j]))
+    #arr3 = arr4
+ #  arr3 = np.array(arr3_normal)
+    arr3Mean = np.mean(arr3)
+    
+    for i in range(len(arr2)):
+        dataPointArray.append(i)
+        meanArr3.append(arr3Mean)
+        meanArr2.append(arr2Mean)
+        meanArr1.append(arr1Mean)
+
+    graphName = "Scatter plot of temperature from both sensors"
+   # graphLine(dataPointArray, variance_array, graphName, pFigNum, "blue")
+    graphName = "Variance between each datapoint of both temperature sensor values"
+    #graphLine(dataPointArray, variance_array, graphName, pFigNum, "blue")
+    
+    pFigNum = 1 + pFigNum
+    #mean graphs
+    graphLine(dataPointArray, meanArr1, graphName, pFigNum, "red")
+    graphLine(dataPointArray, meanArr2, graphName, pFigNum, "orange")
+    graphLine(dataPointArray, meanArr3, graphName, pFigNum, "black")
+    
+    #orignal data points
+    graphScatter(dataPointArray, arr1, graphName, pFigNum, "blue")
+    graphScatter(dataPointArray, arr2, graphName, pFigNum, "green")
+
+    
+
 
 def standard_deviation(data_type: str, lukeDataArray, joshDataArray):
     variance_luke =  lukeDataArray.std()
@@ -265,10 +320,6 @@ def standard_deviation(data_type: str, lukeDataArray, joshDataArray):
     variance_josh =  joshDataArray.std()
     print("=================" + data_type + "Standard Deviation  of Josh' data =================" )
     print(variance_josh)
-
-def predict_response(model): 
-    y_pred = model.predict(x)
-    print('predicted response:', y_pred, sep='\n')
 
 if __name__ == "__main__":
     #tutorial()
@@ -280,11 +331,11 @@ if __name__ == "__main__":
     hostUserName = "luke"
     startingFigNumber = 1
     temperature_luke, humidity_luke, startingFigNumber = temp_humidity_lr(hostUserName, startingFigNumber)
-    temperature_luke, humidity_new, startingFigNumber = temp_humidity_polynom_regression(hostUserName, startingFigNumber)
+    temperature_luke, humidity_luke, startingFigNumber = temp_humidity_polynom_regression(hostUserName, startingFigNumber)
     
     hostUserName = "josh"
     temperature_josh, humidity_josh, startingFigNumber = temp_humidity_lr(hostUserName, startingFigNumber)
-    temperature_new, humidity_new, startingFigNumber = temp_humidity_polynom_regression(hostUserName, startingFigNumber)
+    temperature_josh, humidity_josh, startingFigNumber = temp_humidity_polynom_regression(hostUserName, startingFigNumber)
 
     variance("Temperature: ", temperature_luke, temperature_josh)
     variance("Humidity: ", humidity_luke, humidity_josh)
@@ -295,7 +346,13 @@ if __name__ == "__main__":
     
     standard_deviation("Temperature: ", temperature_luke, temperature_josh)
     standard_deviation("Humidity: ", humidity_luke, humidity_josh)
+    
+    mean("Temperature: ", temperature_luke, temperature_josh)
+    mean("Humidity: ", humidity_luke, humidity_josh)
+    
+    plot_original_data_with_mean(temperature_luke, temperature_josh, humidity_luke, humidity_josh, startingFigNumber)
 
+    
     plt.show()
     
 
