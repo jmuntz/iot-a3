@@ -21,6 +21,8 @@
 			<h1>Most recent data received</h1>
 			<div id="temp"><span class="value"></span><small>temperature</small></div>
 			<div id="humidity"><span class="value"></span><small>humidity</small></div>
+			<p id="client"></p>
+			<p id="timestamp"></p>
 			<br><br>
 			<p>Please view our data by selecting a chart on the right.</p>
 		</div>
@@ -42,22 +44,20 @@
 				.then(response => response.json())
 			}
 
-
 			getTemp().then(function(data) {
-				$("#temp .value").html(data[0].value + "°");
+				$("#temp .value").html(data[0].value + "c");
+				$("#client").html("Received from client: " + data[0].client_addr);
+				time = new Date(parseInt(data[0].timestamp + "000"));
+				$("#timestamp").html(time.getDay() + " / " + time.getMonth() + " / " + time.getFullYear() + " " + time.getHours() + ":" + time.getMinutes());
 			}).catch(function(error) {
 				console.log("getAll chart request failed.");
 			});
-
 
 			getHum().then(function(data) {
 				$("#humidity .value").html(data[0].value);
 			}).catch(function(error) {
 				console.log("getAll chart request failed.");
 			});
-
-
-
 
 		</script>
 	</body>

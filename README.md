@@ -1,12 +1,12 @@
 # Just another IoT project
 
-Primary domain: 
+Root URL for project: 
 https://iot.porky.dev/ass3/app
 
-The API is accessed from /api:
-https://iot.porky.dev/ass3/app/api
+The API is stored under /api:
+eg; https://iot.porky.dev/ass3/app/api
 
-All data sent and received my be JSON compliant.
+All data sent and received should be JSON compliant.
 
 The following endpoints can be used to access or submit data.
 
@@ -14,11 +14,11 @@ The following endpoints can be used to access or submit data.
 * eg; [Temperature and humidity](https://iot.porky.dev/ass3/app/api/get)
 * eg; [Devices that have sent data](https://iot.porky.dev/ass3/app/api/get/hosts) 
 
-### GET - fetch yo datas
+### GET - fetch data
 $ means substitute a variable
 ```php
-integer $limit //limits the number of results
-string $host //provide the IP of a client computer (aka your public IP)t o fetch only results from that PC (IoT device) 
+integer $limit //limits the number of results. default = 25
+string $host //provide the IP of a client computer (aka your public IP) to fetch only results from that PC (IoT device) 
 
 /api/get 
 /api/get/temperature 
