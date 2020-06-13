@@ -13,7 +13,6 @@ class SaveController {
         return "Hi there.";
     }
 
-
 	/**
      * Returns the request for testing purposes
      *
@@ -23,9 +22,6 @@ class SaveController {
 		$json = json_decode(file_get_contents('php://input'), true);
 		return $json;
 	}
-
-
-
 
 	/**
      * Saves value to the temperature table in database
@@ -56,6 +52,15 @@ class SaveController {
 			} $this->throwError('Data not valid.');
 		} $this->throwError('Data not set.');
 	}
+
+
+
+	/*
+	*
+	* HELPER FUNCTIONS
+	*
+	*/
+	
 
 	// ignoring our data validation for now as we changed the format of what was sent
 	private function validData($data) {
@@ -88,7 +93,6 @@ class SaveController {
 		}
 
 	}
-
 
 	private function formatTemperature($json) {
 		// return $json;
