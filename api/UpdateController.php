@@ -29,14 +29,16 @@ class UpdateController {
 			$fp = fopen('iot_config.json', 'w');
 			fwrite($fp, json_encode($_GET));
 			fclose($fp);
-			echo "<span style='padding: 10px 15px;
+			echo "<style>* { font-family: sans-serif; }</style>
+			<span style='padding: 10px 15px;
 				    border: 2px solid #80b8b5;
 				    background: #b9f6f3;
 				    position: relative;
 				    top: 10px;
 				    border-radius: 6px;'>Config updated!</span>";
 		} 
-		echo "<br><br>
+		echo "<style>* { font-family: sans-serif; }</style>
+		<br><br>
 		<h1>Update config.</h1>
 		<style>
 		input, select {
