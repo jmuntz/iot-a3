@@ -3,20 +3,19 @@
 use \RestServer\RestException;
 
 class SaveController {
-	// $_POST = json_decode(file_get_contents("php://input"), true);
 
 	/**
-     * Returns a JSON string object to the browser when hitting the root of the domain
+     * Default function for the /get URL
      *
      * @url GET /
      */
     public function donkey() {
-        return "ur a turddd";
+        return "Hi there.";
     }
 
 
 	/**
-     * Returns a JSON string object to the browser when hitting the root of the domain
+     * Returns the request for testing purposes
      *
 	 * @url POST /dump
      */
@@ -29,7 +28,7 @@ class SaveController {
 
 
 	/**
-     * Returns a JSON string object to the browser when hitting the root of the domain
+     * Saves value to the temperature table in database
      *
      * @url POST /temperature
      */
@@ -44,7 +43,7 @@ class SaveController {
 	}
 
 	/**
-     * Returns a JSON string object to the browser when hitting the root of the domain
+     * Saves value to the humidity table in database
      *
      * @url POST /humidity
      */
@@ -58,6 +57,7 @@ class SaveController {
 		} $this->throwError('Data not set.');
 	}
 
+	// ignoring our data validation for now as we changed the format of what was sent
 	private function validData($data) {
 		return true;
 		//return ((filter_var($data[0], FILTER_VALIDATE_IP)) && ($this->isValidTimeStamp($data[1]) && is_int($data[2])));
