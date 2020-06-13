@@ -4,7 +4,7 @@ sys.path.insert(1, './src')
 #from dc_motor import *
 from fan import Fan
 from servo_motor import ServoDevice
-
+import time
 # this working_sample needs improvement
 #from save_data_to_server import save_temp_and_hum
 #####
@@ -18,6 +18,12 @@ def set_actuator_parameters(sysConfig, pFan, pServo,  pTemperature):
     fanOn = 0
     newMotorPos = 0
     if(sysConfig.extract_status() == "OFF"):
+        json_processor = JsonDataProcessor()
+        serial_data = read_serial()
+        json_data = json_processor.update_DataToProcess(serial_data)        
+        #sends data to table in DB
+        save_temp_humidity(json_processor.get_json_databytes())
+        
         #input values for both actuators based on temperature
         newMotorPos = pServo.calculatePosFromTemp(pTemperature)
         fanIsOn = pFan.runFanwithTemperature(float(pTemperature))
@@ -58,20 +64,17 @@ def mainFunction():
         # get online configuration of physical system
         sysConfig.get_config()
         
-        serial_data = read_serial()
-        json_data = json_processor.update_DataToProcess(serial_data)        
-        #sends data to table in DB
-        save_temp_humidity(json_processor.get_json_databytes())
-        
+
         #Sets actuator parameters
         temperature = json_processor.get_temperature()
         newMotorPos, fanOn = set_actuator_parameters(sysConfig, fan, servo_device, temperature)
 
         ### CAN DELETE BELOW TO MAKE CODE PRETTIER: append new actuator data to json
-        json_processor.append_actuator_data_to_json(newMotorPos, fanOn)
-        json_string = json_processor.get_json_string()
-        print(json_string)
+      #  json_processor.append_actuator_data_to_json(newMotorPos, fanOn)
+       # json_string = json_processor.get_json_string()
+       # print(json_string)
         i = i + 1
+        time.sleep(5)
 
 def mainSaveData():
     print("save data to database")    

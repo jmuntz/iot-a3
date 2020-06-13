@@ -239,6 +239,17 @@ def variance(data_type: str, lukeDataArray, joshDataArray):
     print("-----------" + data_type + "variance of Josh' data --------------------" )
     print(variance_josh)
     
+def mean(data_type: str, lukeDataArray, joshDataArray):
+    mean_luke =  lukeDataArray.mean()
+    print("-----------" + data_type + "mean of Lukes data --------------------" )
+    print(mean_luke)
+    
+    mean_josh =  joshDataArray.mean()
+    print("-----------" + data_type + "mean of Josh' data --------------------" )
+    print(mean_josh)
+    
+
+    
 def variance_between_data_sets(lukeDataArray, joshDataArray):
     variance_array = []
     arrayLength = len(lukeDataArray)
@@ -266,8 +277,10 @@ def plot_original_data_with_mean(arr1, arr2, temparr1, temparr2, pFigNum):
     meanArr3 = []
     arr1Mean  = np.mean(arr1)
     arr2Mean = np.mean(arr2)
-    #arr3 = np.concatenate(arr1, arr2)
-    arr3 = arr1 + arr2
+    arr3 = np.concatenate((arr1, arr2))
+  #  arr3 = arr1 + arr2
+    print("length of both arrays put together")
+    print(len(arr3))
     #arr5 = []
     #for j in range(len(arr2)):
     #    np.append(arr4, (arr2[j]))
@@ -333,6 +346,9 @@ if __name__ == "__main__":
     
     standard_deviation("Temperature: ", temperature_luke, temperature_josh)
     standard_deviation("Humidity: ", humidity_luke, humidity_josh)
+    
+    mean("Temperature: ", temperature_luke, temperature_josh)
+    mean("Humidity: ", humidity_luke, humidity_josh)
     
     plot_original_data_with_mean(temperature_luke, temperature_josh, humidity_luke, humidity_josh, startingFigNumber)
 
