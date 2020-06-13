@@ -9,41 +9,18 @@
 	<body>
 		<?php session_start(); ?>
 		
+		<?php if (!isset($_SESSION["logged_in"]) || (!$_SESSION["logged_in"])) : 
+			require_once 'view/login.html'; ?>
 		
-		<?php if (!isset($_SESSION["logged_in"]) || (!$_SESSION["logged_in"])) : ?>
-		<form class="frm-login" action=<?php echo "$root_URL/api/login"; ?> method="post">
-			<h1>Log in</h1>
-			<input type="text" name="username" value="admin">
-			<input type="text" name="password" value="password">
-			<button type="submit" name="button"> Login</button>
-		</form>
-		<?php else : ?>
-		<ul class="nav menu">
-			<li><a class="btn" href=<?php echo '"'.$root_URL .'"'; ?>>Home</a></li>
-			<li><a class="btn logout" href="logout.php">Logout</a></li>
-		</ul>
-		<ul class="nav chart">
-			<li><strong>Charts</strong></li>
-			<li><a href=<?php echo '"'.$root_URL .'/charts/latest.php"'; ?>>Latest</a></li>
-			<li><a href=<?php echo '"'.$root_URL .'/charts/mean.php"'; ?>>Mean</a></li>
-			<li><a href=<?php echo '"'.$root_URL .'/charts/median.php"'; ?>>Median</a></li>
-		</ul>
-		<ul class="nav todo">
-			<li><strong>todo's</strong>
-			<li>Build out median chart</li>
-			<li style="text-decoration: line-through;">Build out mean chart</li>
-			<li style="text-decoration: line-through;">Add humidity to <em>latest</em> chart chart</li>
-			<li>Add feature to allow actuator to act based on temperature</li>
-			<li style="text-decoration: line-through;"> - needs to be editable via website</li>
-			<li> Report</li>
-		</ul>
+		<?php else : 
+			require_once 'view/menu.html'; ?>
 		<h3>You're logged in!</h3>
 		
 		
 		<div class="charts">
 			<div class="chart">
-				<h2> Mean data</h2>
-				<p> Calculates the mean of each device for the last 10 datapoints.</p>
+				<h2> Regression analysis</h2>
+				<p> <em>Ooo fancy.</em></p>
 				<canvas id="chart" style="max-width: 800px; max-height: 600px;"></canvas>
 			</div>
 			
@@ -79,335 +56,176 @@
 
 
 
-data = [];
+			data = [];
 
-for (index in x_axis) {
-	data.push({
-        x: x_axis_luke[index],
-        y: y_axis_luke[index]
-    })
-}
+			for (index in x_axis) {
+			    data.push({
+			        x: x_axis_luke[index],
+			        y: y_axis_luke[index]
+			    })
+			}
 
-prediction = [];
-for (index in x_axis_prediction) {
-	prediction.push({
-        x: x_axis_prediction_luke[index],
-        y: y_axis_prediction_luke[index]
-    })
-}
-
-			// var ctx = document.getElementById('chart').getContext('2d');
-
-			// 				var scatterChart = new Chart(ctx, {
-			// 			    type: 'scatter',
-			// 			    data: {
-			// 			        datasets: [{
-			// 			            label: 'Scatter Dataset',
-			// 			            data: data
-			// 			        }]
-			// 			    },
-			// 			    options: {
-			// 			        scales: {
-			// 			            xAxes: [{
-			// 			                type: 'linear',
-			// 			                position: 'bottom'
-			// 			            }]
-			// 			        }
-			// 			    }
-			// 			});
+			prediction = [];
+			for (index in x_axis_prediction) {
+			    prediction.push({
+			        x: x_axis_prediction_luke[index],
+			        y: y_axis_prediction_luke[index]
+			    })
+			}
 
 
+			var chartColors = {
+			    blue: "rgb(54, 162, 235)",
+			    green: "rgb(45, 230, 92)",
+			    grey: "rgb(201, 203, 207)",
+			    orange: "rgb(255, 159, 64)",
+			    purple: "rgb(153, 102, 255)",
+			    red: "rgb(255, 99, 132)",
+			    yellow: "rgb(255, 205, 86)"
+			}
 
+			function getNormalizedRandom() {
+			    return ((Math.random() + Math.random() + Math.random() + Math.random() + Math.random() + Math.random()) - 3) / 3;
+			}
+			//This is to return multidimensional random point within the range specified, and have the dependent
+			//variable vary its value based on the normal distribution
+			function getRandomizedData(f = (x) => x, length, dimensions = 2, range = [
+			    [-1, 1]
+			], varianceScalar = 0) {
+			    var dataset = []
+			    for (i = 0; i < length; i++) {
+			        var data = []
+			        var value = 0
+			        for (j = 0; j < dimensions - 1; j++) {
+			            var value = Math.random() * (range[j][1] - range[j][0]) + range[j][0]
+			            data.push(value)
+			        }
+			        value = f(...data)
+			        value += (getNormalizedRandom() * varianceScalar)
+			        data.push(value)
+			        dataset.push(data)
+			    }
+			    return dataset
+			}
 
+			function populate2DScatter(name, sampleData, xAxisLabel, yAxisLabel) {
+			    populate2DRegression(name, sampleData, null, xAxisLabel, yAxisLabel)
+			}
 
-			//Be sure to include this https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js
+			function populate2DRegression(
+			    name,
+			    sampleData,
+			    predict,
+			    xAxisLabel,
+			    yAxisLabel,
+			) {
+			    var usedColors = Object.keys(chartColors)
+			    var getNextColor = (color) => {
+			        if (color) {
+			            var index = usedColors.indexOf(color)
+			            if (index > -1) {
+			                return chartColors[usedColors.splice(index, 1)[0]]
+			            } else {
+			                return color
+			            }
+			        } else {
+			            return chartColors[usedColors.shift()]
+			        }
+			        chartColors[usedColors.shift()]
+			    }
+			    var ctx = document.getElementById(name).getContext('2d');
+			    var color = Chart.helpers.color;
 
-var chartColors = {
-    blue : "rgb(54, 162, 235)",
-    green : "rgb(45, 230, 92)",
-    grey : "rgb(201, 203, 207)",
-    orange : "rgb(255, 159, 64)",
-    purple : "rgb(153, 102, 255)",
-    red : "rgb(255, 99, 132)",
-    yellow : "rgb(255, 205, 86)"
-  }
+			    var chartData = {
+			        datasets: sampleData.map(sample => {
+			            var nextColor = getNextColor(sample.color)
+			            return {
+			                type: 'scatter',
+			                showLine: false,
+			                label: sample.name,
+			                borderColor: nextColor,
+			                backgroundColor: color(nextColor).alpha(0.2).rgbString(),
+			                data: sample.data
+			            }
+			        })
+			    };
 
-function getNormalizedRandom () {
-  return ((Math.random() + Math.random() + Math.random() + Math.random() + Math.random() + Math.random()) - 3) / 3;
-}
-//This is to return multidimensional random point within the range specified, and have the dependent
-//variable vary its value based on the normal distribution
-function getRandomizedData(f=(x)=>x,length,dimensions=2,range=[[-1,1]],varianceScalar=0) {
-  var dataset = []
-  for(i=0;i<length;i++) {
-    var data = []
-    var value = 0
-    for(j=0;j<dimensions-1;j++) {
-      var value = Math.random() * (range[j][1] - range[j][0]) + range[j][0]
-      data.push(value)
-    }
-    value = f(...data)
-    value += (getNormalizedRandom() * varianceScalar)
-    data.push(value)
-    dataset.push(data)
-  }
-  return dataset
-}
-function populate2DScatter(name,sampleData,xAxisLabel,yAxisLabel) {
-  populate2DRegression(name,sampleData,null,xAxisLabel,yAxisLabel)
-}
+			    if (predict) {
+			        //var predictData = predict.data || sampleData[0].data.map(d=>Object.assign({},d,{y:predict.func(d.x)}))
+			        var nextColor = getNextColor(predict.color || 'red')
+			        //predictData = predictData.sort((a,b)=>a.x-b.x)
+			        chartData.datasets.push({
+			            type: 'line',
+			            showLine: true,
+			            cubicInterpolationMode: 'monotone',
+			            pointRadius: 0,
+			            fill: false,
+			            label: predict.name,
+			            borderColor: nextColor,
+			            backgroundColor: color(nextColor).alpha(0.2).rgbString(),
+			            data: prediction
+			        })
+			    }
+			    var getData = (item, data, attr) => {
+			        try {
+			            return data.datasets[item[0].datasetIndex].data[item[0].index][attr]
+			        } catch (e) {
+			            return null
+			        }
+			    }
+			    var chartOptions = {
+			        tooltips: {
+			            callbacks: {
+			                title: (item, data) => getData(item, data, 'title'),
+			                afterTitle: (item, data) => getData(item, data, 'afterTitle'),
+			                label: (item, data) => {
+			                    var label = getData(item, data, 'label') ||
+			                        item.xLabel.toFixed(2) + ", " + item.yLabel.toFixed(2)
+			                    return label
+			                }
+			            },
+			            //This ensures the regression line will not show tooltips
+			            filter: (item) => item.datasetIndex !== sampleData.length
+			        },
+			        scales: {
+			            xAxes: [{
+			                scaleLabel: {
+			                    display: xAxisLabel ? true : false,
+			                    labelString: xAxisLabel
+			                },
+			                display: true
+			            }],
+			            yAxes: [{
+			                scaleLabel: {
+			                    display: yAxisLabel ? true : false,
+			                    labelString: yAxisLabel
+			                },
+			                display: true
+			            }],
+			        }
+			    }
+			    var myChart = new Chart.Scatter(ctx, {
+			        data: chartData,
+			        options: chartOptions
+			    });
 
-function populate2DRegression(
-  name,
-  sampleData,
-  predict,
-  xAxisLabel,
-  yAxisLabel,
-) {
-  var usedColors = Object.keys(chartColors)
-  var getNextColor = (color) => {
-    if(color) {
-      var index = usedColors.indexOf(color)
-      if (index>-1) {
-        return chartColors[usedColors.splice(index,1)[0]]
-      } else {
-        return color
-      }
-    } else {
-      return chartColors[usedColors.shift()]
-    }
-    chartColors[usedColors.shift()]
-  }
-  var ctx = document.getElementById(name).getContext('2d');
-  var color = Chart.helpers.color;
-
-  var chartData = {datasets: sampleData.map(sample=>{
-    var nextColor = getNextColor(sample.color)
-    return {
-          type: 'scatter',
-          showLine: false,
-  				label: sample.name,
-  				borderColor: nextColor,
-  				backgroundColor: color(nextColor).alpha(0.2).rgbString(),
-  				data: sample.data
-  	}
-  })};
-  
-  if(predict) {
-    //var predictData = predict.data || sampleData[0].data.map(d=>Object.assign({},d,{y:predict.func(d.x)}))
-    var nextColor = getNextColor(predict.color||'red')
-    //predictData = predictData.sort((a,b)=>a.x-b.x)
-    chartData.datasets.push({
-      type: 'line',
-      showLine: true,
-      cubicInterpolationMode : 'monotone',
-      pointRadius : 0,
-      fill: false,
-      label: predict.name,
-      borderColor: nextColor,
-      backgroundColor: color(nextColor).alpha(0.2).rgbString(),
-      data: prediction
-    })
-  }
-  var getData=(item,data,attr) => {
-    try { 
-      return data.datasets[item[0].datasetIndex].data[item[0].index][attr]
-    } catch (e) {
-      return null
-    }
-  }
-  var chartOptions = {
-    tooltips: {
-      callbacks: {
-        title : (item, data) => getData(item,data,'title'),
-        afterTitle : (item, data) => getData(item,data,'afterTitle'),
-        label : (item, data) => {
-          var label = getData(item,data,'label') || 
-            item.xLabel.toFixed(2) + ", "+  item.yLabel.toFixed(2)
-          return label
-        }
-      },
-      //This ensures the regression line will not show tooltips
-      filter: (item) =>item.datasetIndex !== sampleData.length
-    },
-    scales: {
-      xAxes: [{
-        scaleLabel : {
-          display : xAxisLabel ? true : false,
-          labelString : xAxisLabel
-        },
-        display: true
-      }],
-      yAxes: [{
-        scaleLabel : {
-          display : yAxisLabel ? true : false,
-          labelString : yAxisLabel
-        },
-        display: true
-      }],
-    }
-  }
-  var myChart = new Chart.Scatter(ctx, {
-      data: chartData,
-      options: chartOptions
-  });
-
-}
-
-//getRandomizedData((x)=>{return 2*x + 1;},100,2,[[0,10],[0,20]],[5,5])
-
-
-
-
-window.onload = () => {
-  var predictFunc1 = (x) => {return Math.pow(x,0) + 0;}
-  
-  var sampleData1 = data;
-  // var predictData1 = sampleData1.map(d=>Object.assign({},d,{y:predictFunc1(d.x)}))
-  var predictData1 = prediction;
-  
-  populate2DRegression("chart",
-    [{name:'Sample Data',data:sampleData1}],
-    {name:'Prediction',func:predictFunc1},
-    'X axis - temperature','Y axis - humidity')
-}
+			}
 
 
 
 
 
-			// const TOTAL_SIZE = 10;
+			window.onload = () => {
+			    var predictFunc1 = (x) => { return Math.pow(x, 0) + 0; }
 
-			// let clients = [];
-			// function getTotalHosts() {
-			// 	fetch('//iot.porky.dev/ass3/app/api/get/hosts')
-			// 	.then(response => response.json())
-			// 	.then(function(data) {
-			// 		clients = data;
-			// 	})
-			// }
-			
+			    var sampleData1 = data;
+			    // var predictData1 = sampleData1.map(d=>Object.assign({},d,{y:predictFunc1(d.x)}))
+			    var predictData1 = prediction;
 
-			// function getAll() {
-			// 	return fetch('https://iot.porky.dev/ass3/app/api/get')
-			// 	.then(response => response.json())
-			// }
-
-			// function getTemperature() {
-			// 	return fetch('https://iot.porky.dev/ass3/app/api/get/temperature/25')
-			// 	.then(response => response.json())
-			// }
-
-			// function getHumidity() {
-			// 	return fetch('https://iot.porky.dev/ass3/app/api/get/humidity/25')
-			// 	.then(response => response.json())
-			// }
-
-			// getAll().then(function(data) {
-			// 	console.log(data);
-			// }).catch(function(error) {
-			// 	console.log("getAll request failed.");
-			// });
-
-			// let labels = [];
-			// for (i = 0; i < TOTAL_SIZE; i++) { labels[i] = i; }
-			// var ctx = document.getElementById('chart').getContext('2d');
-			// var chart = new Chart(ctx, {
-			// 	type: 'line',
-			// 	data: {
-			// 		labels: labels,
-			// 	},
-			// 	options: {}
-			// });
-			// updateChart();
-			
-			// dataset = [{}];
-			// function updateChart() {
-			// 	getAll().then(function(data) {
-			// 		dataset = [{}];
-			// 		sum = 0;
-			// 		mean_data = [];
-
-			// 		mean_data = calculateMean(data.temperature);
-
-			// 		dataset[0] = {
-			// 			label: "Mean temperature across all clients",//data.temperature[index].host,
-			// 			labels: labels,
-			// 			borderColor: "orange",
-			// 			backgroundColor: 'transparent',
-			// 			data: mean_data
-			// 		}
-
-			// 		chart.config.data.datasets = dataset;
-			// 		chart.update();
-			// 	}).catch(function(error) {
-			// 		console.log("getAll chart request failed.");
-			// 	});
-			// };
-			// function rechartTemperature() {
-			// 	getAll().then(function(data) {
-			// 		dataset = [{}];
-			// 		sum = 0;
-			// 		mean_data = [];
-
-			// 		mean_data = calculateMean(data.temperature);
-
-			// 		dataset[0] = {
-			// 			label: "Mean temperature across all clients",//data.temperature[index].host,
-			// 			labels: labels,
-			// 			borderColor: "orange",
-			// 			backgroundColor: 'transparent',
-			// 			data: mean_data
-			// 		}
-
-			// 		chart.config.data.datasets = dataset;
-			// 		chart.update();
-			// 	}).catch(function(error) {
-			// 		console.log("getAll chart request failed.");
-			// 	});
-			// };
-			// function rechartHumidity() {
-			// 	getAll().then(function(data) {
-			// 		dataset = [{}];
-			// 		sum = 0;
-			// 		mean_data = [];
-
-			// 		mean_data = calculateMean(data.humidity);
-
-			// 		dataset[0] = {
-			// 			label: "Mean humidity across all clients",//data.temperature[index].host,
-			// 			labels: labels,
-			// 			borderColor: "orange",
-			// 			backgroundColor: 'transparent',
-			// 			data: mean_data
-			// 		}
-
-			// 		chart.config.data.datasets = dataset;
-			// 		chart.update();
-			// 	}).catch(function(error) {
-			// 		console.log("getAll chart request failed.");
-			// 	});
-			// };
-
-
-			// function calculateMean(data) {
-			// 	mean_data = [];
-			// 	spliced_array = [];
-			// 	for (index in data) {
-			// 		spliced_array[index] = data[0].data.splice(0, TOTAL_SIZE).reverse()
-			// 	}
-				
-			// 	for (var i = 0; i < spliced_array[0].length; i++) {
-			// 		sum = 0;
-			// 		for (var k = 0; k < spliced_array.length; k++) {
-			// 			sum += parseInt(spliced_array[k][i]);
-			// 			console.log("SUM: " + sum);
-			// 		}	
-			// 		mean_data.push(sum / spliced_array.length);
-			// 	}
-			// 	return mean_data;
-			// }
- 
+			    populate2DRegression("chart",
+			        [{ name: 'Sample Data', data: sampleData1 }], { name: 'Prediction', func: predictFunc1 },
+			        'X axis - temperature', 'Y axis - humidity')
+			}
 
 
 		</script>

@@ -9,34 +9,11 @@
 	<body>
 		<?php session_start(); ?>
 		
+		<?php if (!isset($_SESSION["logged_in"]) || (!$_SESSION["logged_in"])) : 
+			require_once 'view/login.html'; ?>
 		
-		<?php if (!isset($_SESSION["logged_in"]) || (!$_SESSION["logged_in"])) : ?>
-		<form class="frm-login" action=<?php echo "$root_URL/api/login"; ?> method="post">
-			<h1>Log in</h1>
-			<input type="text" name="username" value="admin">
-			<input type="text" name="password" value="password">
-			<button type="submit" name="button"> Login</button>
-		</form>
-		<?php else : ?>
-		<ul class="nav menu">
-			<li><a class="btn" href=<?php echo '"'.$root_URL .'"'; ?>>Home</a></li>
-			<li><a class="btn logout" href="logout.php">Logout</a></li>
-		</ul>
-		<ul class="nav chart">
-			<li><strong>Charts</strong></li>
-			<li><a href=<?php echo '"'.$root_URL .'/charts/latest.php"'; ?>>Latest</a></li>
-			<li><a href=<?php echo '"'.$root_URL .'/charts/mean.php"'; ?>>Mean</a></li>
-			<li><a href=<?php echo '"'.$root_URL .'/charts/median.php"'; ?>>Median</a></li>
-		</ul>
-		<ul class="nav todo">
-			<li><strong>todo's</strong>
-				<li>Build out median chart</li>
-				<li>Build out mean chart</li>
-				<li style="text-decoration: line-through;">Add humidity to <em>latest</em> chart chart</li>
-				<li>Add feature to allow actuator to act based on temperature</li>
-				<li> - needs to be editable via website</li>
-				<li> Report</li>
-			</ul>
+		<?php else : 
+			require_once 'view/menu.html'; ?>
 			<h3>You're logged in!</h3>
 			
 			
@@ -100,7 +77,7 @@
 								labels: labels,
 								borderColor: "red",
 								backgroundColor: 'transparent',
-								data: data.temperature[0].data.splice(0, TOTAL_SIZE).reverse()
+								data: data.temperature[index].data.splice(0, TOTAL_SIZE).reverse()
 							}
 						}
 
@@ -121,7 +98,7 @@
 								labels: labels,
 								borderColor: "red",
 								backgroundColor: 'transparent',
-								data: data.temperature[0].data.splice(0, TOTAL_SIZE).reverse()
+								data: data.temperature[index].data.splice(0, TOTAL_SIZE).reverse()
 							}
 						}
 						chart.config.data.datasets = dataset;
@@ -141,7 +118,7 @@
 								labels: labels,
 								borderColor: "purple",
 								backgroundColor: 'transparent',
-								data: data.humidity[0].data.splice(0, TOTAL_SIZE).reverse()
+								data: data.humidity[index].data.splice(0, TOTAL_SIZE).reverse()
 							}
 						}
 						chart.config.data.datasets = dataset;
